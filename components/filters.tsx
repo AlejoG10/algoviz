@@ -2,8 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  Binary,
+  Droplets,
+  GitMerge,
+  LucideIcon,
+  MousePointer,
+  PictureInPicture2,
+  Pin,
+} from "lucide-react";
 
-import { Droplets, GitMerge, PictureInPicture2, Pin } from "lucide-react";
+type Filter = {
+  id: string;
+  name: string;
+  icon: LucideIcon;
+};
 
 const Filters = () => {
   const router = useRouter();
@@ -20,6 +33,11 @@ const Filters = () => {
       icon: Droplets,
     },
     {
+      id: "selection-sort",
+      name: "Selection Sort",
+      icon: MousePointer,
+    },
+    {
       id: "insertion-sort",
       name: "Insertion Sort",
       icon: PictureInPicture2,
@@ -34,6 +52,11 @@ const Filters = () => {
       name: "Quick Sort",
       icon: Pin,
     },
+    {
+      id: "binary-search",
+      name: "Binary Search",
+      icon: Binary,
+    },
   ];
 
   const handleClick = (id: string) => {
@@ -45,8 +68,8 @@ const Filters = () => {
   }, [active]);
 
   return (
-    <div className="flex items-center bg-white border-y border-neutral-200 px-4 sm:px-8">
-      <div className="flex items-center gap-x-8 overflow-x-scroll no-scrollbar">
+    <div className="flex justify-center items-center bg-white border-y border-neutral-200 px-4 sm:px-8 w-full">
+      <div className="flex items-center gap-x-5 overflow-x-scroll no-scrollbar">
         {filters.map((filter) => {
           const Icon = filter.icon;
 

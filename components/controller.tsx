@@ -1,58 +1,70 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { genArray } from "@/lib/utils";
+import bubbleSort from "@/lib/algorithms/bubble-sort";
 import Filters from "./filters";
 import Container from "./container";
 import Options from "./options";
 
 const Controller = () => {
-  const [arraySize, setArraySize] = useState(50);
-  const [maxValue, setMaxValue] = useState(400);
-  const [showValues, setShowValues] = useState(false);
-  const [sorted, setSorted] = useState(false);
-  const [reversed, setReversed] = useState(false);
+  const searchParams = useSearchParams();
 
-  const array = useMemo(
-    () => genArray(arraySize, maxValue),
-    [arraySize, maxValue]
-  );
+  const [loadingArray, setLoadingArray] = useState<boolean>(true);
+
+  const [step, setStep] = useState<number>(0);
+  const [steps, setSteps] = useState<number[][]>([]);
+
+  const handleReset = () => {
+    setLoadingArray(true);
+    setArraySize(50);
+    setMaxValue(400);
+    setArray(genArray(arraySize, maxValue));
+    setStep(0);
+    setSteps([]);
+    setShowValues(false);
+    setSorted(false);
+    setReversed(false);
+    setLoadingArray(false);
+  };
+
 
   useEffect(() => {
-    if (arraySize > 100) setShowValues(false);
-  }, [arraySize]);
-
-  const handleArraySizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setArraySize(Number(e.target.value));
-  };
-
-  const handleMaxValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxValue(Number(e.target.value));
-  };
-
-  const handleShowValuesChange = () => {
-    setShowValues((prev) => !prev);
-  };
-
-  const handleSortedChange = () => {
-    if (sorted) {
-      setSorted(false);
-      // TODO: shuffle
-    } else {
-      setSorted(true);
-      array.sort((a, b) => a - b);
+    if (step < steps.length) {
+      setArray(steps[step]);
     }
+  }, [step, steps]);
+
+  const animateSort = (steps: number[][]) => {
+    setSteps(steps);
+    setStep(0);
+
+    const intervalId = setInterval(() => {
+      setStep((prev) => {
+        if (prev + 1 >= steps.length) {
+          clearInterval(intervalId);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 1000);
   };
 
-  const handleReversedChange = () => {
-    if (reversed) {
-      setReversed(false);
-      // TODO: shuffle
-    } else {
-      setReversed(true);
-      array.sort((a, b) => b - a);
+  const handleSort = () => {
+    const algo = searchParams.get("algo");
+    let steps: number[][] = [];
+
+    switch (algo) {
+      case "bubble-sort":
+        steps = bubbleSort(array);
+        break;
+      default:
+        alert("Error");
     }
+
+    animateSort(steps);
   };
 
   return (
@@ -63,8 +75,10 @@ const Controller = () => {
           width={800}
           height={400}
           array={array}
+          step={step}
           maxValue={maxValue}
           showValues={showValues}
+          loading={loadingArray}
         />
       </div>
       <Options
@@ -78,6 +92,8 @@ const Controller = () => {
         handleSortedChange={handleSortedChange}
         reversed={reversed}
         handleReversedChange={handleReversedChange}
+        handleReset={handleReset}
+        handleSort={handleSort}
       />
     </div>
   );
