@@ -1,7 +1,10 @@
 import Settings from "@/components/shared/settings";
-import Item from "@/components/shared/item";
+import Label from "@/components/shared/form/label";
+import Item from "@/components/shared/form/item";
 
 interface BubbleSortSettingsProps {
+  sorting: boolean;
+
   arraySize: number;
   handleArraySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
@@ -25,6 +28,8 @@ interface BubbleSortSettingsProps {
 }
 
 const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
+  sorting,
+
   arraySize,
   handleArraySizeChange,
 
@@ -65,6 +70,7 @@ const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
         showValue
         onChange={handleArraySizeChange}
         className="flex-1"
+        disabled={sorting}
       />
 
       <Item
@@ -76,7 +82,7 @@ const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
         value={maxValue}
         showValue
         onChange={handleMaxValueChange}
-        disabled={colorMode}
+        disabled={sorting || colorMode}
         className="flex-1"
       />
 
@@ -91,25 +97,38 @@ const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
         showValue
         onChange={handleDelayChange}
         className="flex-1"
+        disabled={sorting}
       />
 
-      <Item
-        name="sorted"
-        label="Sorted:"
-        type="checkbox"
-        checked={sortedArray}
-        onChange={handleSortedArrayChange}
-        className="w-4 h-4"
-      />
+      <div className="flex items-center gap-4">
+        <Label htmlFor="arrangement">Arrangement:</Label>
+        <Item
+          name="arrangement"
+          label="shuffled"
+          type="radio"
+          checked={false}
+          onChange={() => {}}
+          disabled={sorting}
+        />
 
-      <Item
-        name="reversed"
-        label="Reversed:"
-        type="checkbox"
-        checked={reversedArray}
-        onChange={handleReversedArrayChange}
-        className="w-4 h-4"
-      />
+        <Item
+          name="arrangement"
+          label="sorted"
+          type="radio"
+          checked={sortedArray}
+          onChange={handleSortedArrayChange}
+          disabled={sorting}
+        />
+
+        <Item
+          name="arrangement"
+          label="reversed"
+          type="radio"
+          checked={reversedArray}
+          onChange={handleReversedArrayChange}
+          disabled={sorting}
+        />
+      </div>
 
       <Item
         name="showValues"
@@ -118,7 +137,7 @@ const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
         checked={showValues}
         onChange={handleShowValuesChange}
         className="w-4 h-4"
-        disabled={arraySize > 100}
+        disabled={sorting || arraySize > 100}
       />
 
       <Item
@@ -129,6 +148,7 @@ const BubbleSortSettings: React.FC<BubbleSortSettingsProps> = ({
         checked={colorMode}
         onChange={handleColorModeChange}
         className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 w-4 h-4"
+        disabled={sorting}
       />
     </Settings>
   );

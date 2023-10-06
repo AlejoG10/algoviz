@@ -13,9 +13,10 @@ const BubbleSortController = () => {
   const VISUALIZER_HEIGHT = 400;
 
   const [loadingArray, setLoadingArray] = useState(true);
+  const [sorting, setSorting] = useState(false);
   const [arraySize, setArraySize] = useState<number>(50);
   const [maxValue, setMaxValue] = useState<number>(400);
-  const [delay, setDelay] = useState<number>(500);
+  const [delay, setDelay] = useState<number>(0);
   const [array, setArray] = useState<number[]>(genArray(arraySize, maxValue));
   const [colorArray, setColorArray] = useState<Color[]>(
     genColorModeArray(arraySize)
@@ -24,11 +25,11 @@ const BubbleSortController = () => {
   const [reversedArray, setReversedArray] = useState<boolean>(false);
   const [showValues, setShowValues] = useState<boolean>(false);
   const [colorMode, setColorMode] = useState<boolean>(false);
-  const [steps, setSteps] = useState<BubbleSortData["steps"]>([[...array]]);
+  const [steps, setSteps] = useState<BubbleSortData["steps"]>([]);
   const [step, setStep] = useState(0);
-  const [colorSteps, setColorSteps] = useState<BubbleSortData["colorSteps"]>([
-    [...colorArray],
-  ]);
+  const [colorSteps, setColorSteps] = useState<BubbleSortData["colorSteps"]>(
+    []
+  );
   const [colorStep, setColorStep] = useState(0);
   const [comparisons, setComparisons] = useState<BubbleSortData["comparisons"]>(
     []
@@ -39,18 +40,19 @@ const BubbleSortController = () => {
 
   const handleReset = () => {
     setLoadingArray(true);
+    setLoadingArray(false);
     setArraySize(50);
     setMaxValue(400);
-    setDelay(500);
+    setDelay(0);
     setArray(genArray(50, 400));
     setColorArray(genColorModeArray(50));
     setSortedArray(false);
     setReversedArray(false);
     setShowValues(false);
     setColorMode(false);
-    setSteps([[...array]]);
+    setSteps([]);
     setStep(0);
-    setColorSteps([[...colorArray]]);
+    setColorSteps([]);
     setColorStep(0);
     setComparisons([]);
     setSortedIdxs([]);
@@ -134,6 +136,7 @@ const BubbleSortController = () => {
       } else {
         setStep((prev) => {
           if (prev + 1 >= steps.length) {
+            setSorting(false);
             clearInterval(intervalId);
             return prev;
           } else {
@@ -145,6 +148,7 @@ const BubbleSortController = () => {
   };
 
   const handleSort = () => {
+    setSorting(true);
     const data: BubbleSortData = colorMode
       ? bubbleSort(colorArray, true)
       : bubbleSort(array);
@@ -213,9 +217,16 @@ const BubbleSortController = () => {
           />
         )}
 
-        <Controls handleSort={handleSort} handleReset={handleReset} />
+        <Controls
+          sorting={sorting}
+          step={colorMode ? colorStep : step}
+          steps={colorMode ? colorSteps.length : steps.length}
+          handleSort={handleSort}
+          handleReset={handleReset}
+        />
       </div>
       <BubbleSortSettings
+        sorting={sorting}
         arraySize={arraySize}
         handleArraySizeChange={handleArraySizeChange}
         maxValue={maxValue}

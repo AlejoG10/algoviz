@@ -1,3 +1,5 @@
+import Label from "./label";
+
 interface ItemProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   multicolorLabel?: boolean;
@@ -22,15 +24,9 @@ const Item: React.FC<ItemProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-x-5">
-      <label
-        htmlFor={name}
-        className={`font-medium w-28 ${
-          multicolorLabel &&
-          "text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-rose-500"
-        }`}
-      >
+      <Label htmlFor={name} multicolor={multicolorLabel}>
         {label}
-      </label>
+      </Label>
       <input
         name={name}
         type={type}
