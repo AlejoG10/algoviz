@@ -8,7 +8,7 @@ const genRandNum = (min: number, max: number): number => {
 
 export const genArray = (arraySize: number, maxValue: number, sortingOrder?: SortingOrder): number[] => {
     const arr = Array.from({ length: arraySize }).map(_ => genRandNum(1, maxValue));
-    if (sortingOrder !== "shuffled") {
+    if (sortingOrder && sortingOrder !== "shuffled") {
         arr.sort((a, b) => a - b)
         sortingOrder === "reversed" && arr.reverse()
     }
@@ -38,11 +38,18 @@ const purple = ["#d8b4fe", "#c084fc", "#a855f7", "#9333ea", "#7e22ce", "#6b21a8"
 const fuchsia = ["#f0abfc", "#e879f9", "#d946ef", "#c026d3", "#a21caf", "#86198f", "#701a75", "#4a044e"]; // 300-950
 const pink = ["#f9a8d4", "#f472b6", "#ec4899", "#db2777", "#be185d", "#9d174d", "#831843", "#500724"]; // 300-950
 const rose = ["#fda4af", "#fb7185", "#f43f5e", "#e11d48", "#be123c", "#9f1239", "#881337", "#4c0519"]; // 300-950
-const tailwindColors = [...yellow, ...amber, ...orange, ...lime, ...green, ...emerald, ...teal, ...cyan, ...sky, ...blue, ...indigo, ...violet, ...purple, ...fuchsia, ...pink, ...rose, ...red, ...slate, ...neutral]
+const tailwindColors = [
+    ...yellow, ...amber, ...orange,
+    ...lime, ...green, ...emerald, ...teal,
+    ...cyan, ...sky, ...blue, ...indigo,
+    ...violet, ...purple, ...fuchsia,
+    ...pink, ...rose, ...red,
+    ...slate, ...neutral
+]
 
 const genHEXColor = (): ColorValue => {
     const idx = Math.floor(Math.random() * tailwindColors.length);
-    return [tailwindColors[idx], idx];
+    return [tailwindColors[idx], idx]; // TODO: improve personal approach
 }
 
 const genHSLColor = (): ColorValue => {
@@ -50,7 +57,7 @@ const genHSLColor = (): ColorValue => {
     const S = Math.floor(Math.random() * 101);
     const L = Math.floor(Math.random() * 101);
     const HSL = `hsl(${H}, ${S}%, ${L}%)`;
-    return [HSL, H];
+    return [HSL, H]; // hue-based
 }
 
 const genRGBColor = (): ColorValue => {
@@ -64,7 +71,7 @@ const genRGBColor = (): ColorValue => {
 
 export const genColorArray = (size: number, colorSystem: ColorSystem, sortingOrder?: SortingOrder): ColorValue[] => {
     const arr: ColorValue[] = Array.from({ length: size }).map(_ => colorSystem === "HEX" ? genHEXColor() : colorSystem === "HSL" ? genHSLColor() : genRGBColor());
-    if (sortingOrder !== "shuffled") {
+    if (sortingOrder && sortingOrder !== "shuffled") {
         arr.sort((a, b) => a[1] - b[1]);
         sortingOrder === "reversed" && arr.reverse();
     }

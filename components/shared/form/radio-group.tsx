@@ -3,7 +3,6 @@ import Input from "./input";
 
 export type Radio = {
   label: string;
-  value: string;
   checked: boolean;
   onChange: () => void;
 };
@@ -30,7 +29,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
         <div className="flex flex-col gap-y-4">
           {radioGroup.map((radio) => (
-            <div key={radio.value} className="flex items-center gap-x-4">
+            <div key={radio.label} className="flex items-center gap-x-4">
               <Input
                 type="radio"
                 {...radio}

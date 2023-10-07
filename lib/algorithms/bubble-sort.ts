@@ -1,36 +1,36 @@
 import { swap } from "./utils";
 
 export type BubbleSortData = {
-    steps: number[][],
-    colorSteps: Color[][],
+    sortingSteps: number[][],
+    colorSortingSteps: ColorValue[][],
     comparisons: number[];
-    sortedIdxs: number[];
     numSwaps: number[];
+    sortedIdxs: number[];
 }
 
-const bubbleSort = (array: number[] | Color[], colorMode?: boolean): BubbleSortData => {
-    let steps: BubbleSortData["steps"] = [[...array as number[]]];
-    let colorSteps: BubbleSortData["colorSteps"] = [[...array as Color[]]];
-    const comparisons: BubbleSortData["comparisons"] = [];
-    const sortedIdxs: BubbleSortData["sortedIdxs"] = [];
+const bubbleSort = (array: number[] | ColorValue[], colorMode?: boolean): BubbleSortData => {
+    let sortingSteps: number[][] = [[...array as number[]]];
+    let colorSortingSteps: ColorValue[][] = [[...array as ColorValue[]]];
+    const comparisons: number[] = [];
+    const sortedIdxs: number[] = [];
     let numSwapsCounter: number = 0;
-    const numSwaps: BubbleSortData["numSwaps"] = [numSwapsCounter];
+    const numSwaps: number[] = [numSwapsCounter];
 
     for (let i = 0; i < array.length; i++) {
         for (let j = 1; j < array.length - i; j++) {
             if (colorMode) {
-                const colorArray = array as Color[];
+                const colorArray = array as ColorValue[];
                 if (colorArray[j - 1][1] > colorArray[j][1]) {
-                    swap(array as Color[], j - 1, j)
+                    swap(array as ColorValue[], j - 1, j)
                     numSwapsCounter++;
                 }
-                colorSteps.push([...array as Color[]]);
+                colorSortingSteps.push([...array as ColorValue[]]);
             } else {
                 if (array[j - 1] > array[j]) {
                     swap(array as number[], j - 1, j)
                     numSwapsCounter++;
                 }
-                steps.push([...array as number[]]);
+                sortingSteps.push([...array as number[]]);
             }
             comparisons.push(j - 1);
             sortedIdxs.push(i)
@@ -38,7 +38,7 @@ const bubbleSort = (array: number[] | Color[], colorMode?: boolean): BubbleSortD
         }
     }
 
-    return { steps, colorSteps, comparisons, sortedIdxs, numSwaps };
+    return { sortingSteps, colorSortingSteps, comparisons, numSwaps, sortedIdxs };
 }
 
 export default bubbleSort;

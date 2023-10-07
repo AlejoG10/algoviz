@@ -17,7 +17,7 @@ const Visualizer: React.FC<VisualizerProps> = ({
     <div className="flex visualizer-bp:justify-center bg-neutral-50 border-neutral-100 border shadow-md rounded-xl px-6 py-8">
       <div
         style={styles}
-        className={`flex justify-center gap-x-px w-full ${
+        className={`flex justify-center gap-x-px w-full overflow-hidden ${
           loading ? "items-center" : "items-end"
         }`}
       >

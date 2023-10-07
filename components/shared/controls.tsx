@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Progress, Tooltip } from "@nextui-org/react";
+import { Progress } from "@nextui-org/react";
 import {
   ChevronsLeft,
   ChevronsRight,
@@ -10,15 +10,14 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-import Button from "./form/button";
 import MyTooltip from "./my-tooltip";
+import Button from "./form/button";
 
 interface ControlsProps {
-  sorting: boolean;
-  sortingMode: SortingMode;
+  sortingState: SortingState;
   step: number;
   steps: number;
-  handleSort: (mode: SortingMode) => void;
+  handleSort: (sortingState: SortingState) => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
   handlePause: () => void;
@@ -26,8 +25,7 @@ interface ControlsProps {
 }
 
 const Controls: React.FC<ControlsProps> = ({
-  sorting,
-  sortingMode,
+  sortingState,
   step,
   steps,
   handleSort,
@@ -61,12 +59,12 @@ const Controls: React.FC<ControlsProps> = ({
                 circle
                 bgColor="green"
                 onClick={handlePrevStep}
-                disabled={(sorting && sortingMode === "default") || step === 0}
+                disabled={sortingState === "running" || step === 0}
               >
                 <ChevronsLeft size={20} />
               </Button>
             </MyTooltip>
-            {sorting && sortingMode === "default" ? (
+            {sortingState === "running" ? (
               <MyTooltip
                 placement="bottom"
                 content="pause sorting"
@@ -92,7 +90,7 @@ const Controls: React.FC<ControlsProps> = ({
                 <Button
                   circle
                   bgColor="green"
-                  onClick={() => handleSort("default")}
+                  onClick={() => handleSort("running")}
                   disabled={allSorted}
                 >
                   <Play size={20} className="pl-px" />
@@ -109,7 +107,7 @@ const Controls: React.FC<ControlsProps> = ({
                 circle
                 bgColor="green"
                 onClick={handleNextStep}
-                disabled={(sorting && sortingMode === "default") || allSorted}
+                disabled={sortingState === "running" || allSorted}
               >
                 <ChevronsRight size={20} />
               </Button>

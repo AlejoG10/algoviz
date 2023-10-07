@@ -1,19 +1,24 @@
 "use client";
 
-import { useEffect, useState, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import { genArray, genColorArray } from "@/lib/utils";
 import bubbleSort, { BubbleSortData } from "@/lib/algorithms/bubble-sort";
-import BubbleSortConfig from "./bubble-sort-config";
-import BubbleSortVisualizer from "./bubble-sort-visualizer";
+import BarsInfo from "@/components/shared/bars-info";
 import Console from "@/components/shared/console";
 import Controls from "@/components/shared/controls";
-import BarsInfo from "@/components/shared/bars-info";
+import BubbleSortConfig from "./bubble-sort-config";
+import BubbleSortVisualizer from "./bubble-sort-visualizer";
 
 type State = {
-  isArrayLoading: boolean;
   array: number[];
   colorArray: ColorValue[];
+  stepIdx: number;
+  sortingSteps: number[][];
+  colorSortingSteps: ColorValue[][];
+  comparisons: number[];
+  numSwaps: number[];
+  sortedIdxs: number[];
   arraySize: number;
   maxValue: number;
   delay: number;
@@ -21,45 +26,85 @@ type State = {
   colorSystem: ColorSystem;
   showValues: boolean;
   styleMode: StyleMode;
+  sortingState: SortingState;
+  sortingTimeout: NodeJS.Timeout | undefined;
+  isArrayLoading: boolean;
 };
 
 type Action =
-  | { type: "SET_IS_ARRAY_LOADING"; payload: boolean }
   | { type: "SET_ARRAY"; payload: number[] }
   | { type: "SET_COLOR_ARRAY"; payload: ColorValue[] }
   | { type: "SET_ARRAY_SIZE"; payload: number }
+  | { type: "NEXT_STEP_IDX" }
+  | { type: "PREVIOUS_STEP_IDX" }
+  | { type: "SET_SORTING_STEPS"; payload: number[][] }
+  | { type: "SET_COLOR_SORTING_STEPS"; payload: ColorValue[][] }
   | { type: "SET_MAX_VALUE"; payload: number }
   | { type: "SET_DELAY"; payload: number }
   | { type: "SET_SORTING_ORDER"; payload: SortingOrder }
   | { type: "SET_COLOR_SYSTEM"; payload: ColorSystem }
   | { type: "TOGGLE_SHOW_VALUES" }
-  | { type: "HIDE_VALUES" }
   | { type: "SET_STYLE_MODE"; payload: StyleMode }
+  | { type: "SET_SORTING_STATE"; payload: SortingState }
+  | { type: "SET_SORTING_TIMEOUT"; payload: NodeJS.Timeout | undefined }
+  | { type: "SET_IS_ARRAY_LOADING"; payload: boolean }
+  | {
+      type: "SET_SORT_DATA";
+      payload: {
+        sortingSteps: number[][];
+        colorSortingSteps: ColorValue[][];
+        comparisons: number[];
+        numSwaps: number[];
+        sortedIdxs: number[];
+      };
+    }
   | { type: "RESET_STATE" };
 
-const initialState: State = {
-  isArrayLoading: true,
-  array: genArray(25, 400),
-  colorArray: genColorArray(25, "HEX"),
-  arraySize: 25,
-  maxValue: 400,
-  delay: 0,
-  sortingOrder: "shuffled",
-  colorSystem: "HEX",
-  showValues: false,
-  styleMode: "default",
+const getInitialState = (): State => {
+  // re-usable constants
+  const arraySize = 25;
+  const maxValue = 400;
+  const colorSystem: ColorSystem = "HEX";
+  const array = genArray(arraySize, maxValue);
+  const colorArray = genColorArray(arraySize, colorSystem);
+
+  return {
+    array,
+    colorArray,
+    stepIdx: 0,
+    sortingSteps: [[...array]],
+    colorSortingSteps: [[...colorArray]],
+    comparisons: [0],
+    numSwaps: [0],
+    sortedIdxs: [],
+    arraySize,
+    maxValue,
+    delay: 0,
+    sortingOrder: "shuffled",
+    colorSystem,
+    showValues: false,
+    styleMode: "default",
+    sortingState: "idle",
+    sortingTimeout: undefined,
+    isArrayLoading: true,
+  };
 };
+
+const initialState = getInitialState();
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case "SET_IS_ARRAY_LOADING":
-      return { ...state, isArrayLoading: action.payload };
-
     case "SET_ARRAY":
       return { ...state, array: action.payload };
 
     case "SET_COLOR_ARRAY":
       return { ...state, colorArray: action.payload };
+
+    case "NEXT_STEP_IDX":
+      return { ...state, stepIdx: state.stepIdx + 1 };
+
+    case "PREVIOUS_STEP_IDX":
+      return { ...state, stepIdx: state.stepIdx - 1 };
 
     case "SET_ARRAY_SIZE":
       return { ...state, arraySize: action.payload };
@@ -79,11 +124,28 @@ const reducer = (state: State, action: Action) => {
     case "TOGGLE_SHOW_VALUES":
       return { ...state, showValues: !state.showValues };
 
-    case "HIDE_VALUES":
-      return { ...state, showValues: false };
-
     case "SET_STYLE_MODE":
-      return { ...state, style: action.payload };
+      return { ...state, styleMode: action.payload };
+
+    case "SET_SORTING_STATE":
+      return { ...state, sortingState: action.payload };
+
+    case "SET_SORTING_TIMEOUT":
+      return { ...state, sortingTimeout: action.payload };
+
+    case "SET_IS_ARRAY_LOADING":
+      return { ...state, isArrayLoading: action.payload };
+
+    case "SET_SORT_DATA":
+      return {
+        ...state,
+        stepIdx: 0,
+        sortingSteps: action.payload.sortingSteps,
+        colorSortingSteps: action.payload.colorSortingSteps,
+        comparisons: action.payload.comparisons,
+        numSwaps: action.payload.numSwaps,
+        nsortedIdxs: action.payload.sortedIdxs,
+      };
 
     case "RESET_STATE":
       return initialState;
@@ -95,81 +157,6 @@ const reducer = (state: State, action: Action) => {
 
 const BubbleSortController = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const [sorting, setSorting] = useState<boolean>(false);
-  const [sortingMode, setSortingMode] = useState<SortingMode>("default");
-  const [sortingTimeout, setSortingTimeout] = useState<
-    NodeJS.Timeout | undefined
-  >();
-
-  const [steps, setSteps] = useState<BubbleSortData["steps"]>([[...array]]);
-  const [step, setStep] = useState(0);
-  const [colorSteps, setColorSteps] = useState<BubbleSortData["colorSteps"]>([
-    [...colorArray],
-  ]);
-  const [colorStep, setColorStep] = useState(0);
-  const [comparisons, setComparisons] = useState<BubbleSortData["comparisons"]>(
-    [0]
-  );
-  const [sortedIdxs, setSortedIdxs] = useState<BubbleSortData["sortedIdxs"]>(
-    []
-  );
-  const [numSwaps, setNumSwaps] = useState<number[]>([0]);
-
-  const handleReset = () => {
-    setSorting(false);
-    setSortingMode("default");
-
-    clearTimeout(sortingTimeout);
-    setSortingTimeout(undefined);
-
-    setSteps([[...newArray]]);
-    setStep(0);
-    setColorSteps([[...newColorArray]]);
-    setColorStep(0);
-    setComparisons([0]);
-    setSortedIdxs([]);
-
-    setNumSwaps([0]);
-
-    setLoadingArray(false);
-  };
-
-  const handleSort = (mode: SortingMode) => {
-    setSorting(true);
-    setSortingMode(mode);
-
-    const data: BubbleSortData = colorMode
-      ? bubbleSort(colorArray, true)
-      : bubbleSort(array);
-
-    const { steps, colorSteps, comparisons, sortedIdxs, numSwaps } = data;
-
-    setSteps(steps);
-    setStep(0);
-
-    setColorSteps(colorSteps);
-    setColorStep(0);
-
-    setComparisons(comparisons);
-    setSortedIdxs(sortedIdxs);
-
-    setNumSwaps(numSwaps);
-  };
-
-  const handleNextStep = () => {
-    (colorMode ? colorStep === 0 : step === 0) && handleSort("debug");
-    colorMode ? setColorStep((prev) => prev + 1) : setStep((prev) => prev + 1);
-  };
-
-  const handlePrevStep = () => {
-    colorMode ? setColorStep((prev) => prev - 1) : setStep((prev) => prev - 1);
-  };
-
-  const handlePause = () => {
-    clearInterval(sortingTimeout);
-    setSortingMode("debug");
-  };
 
   // ---------
   // FUNCTIONS
@@ -187,18 +174,12 @@ const BubbleSortController = () => {
     dispatch({ type: "SET_DELAY", payload: Number(e.target.value) });
   };
 
-  const handleSortingOrderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: "SET_SORTING_ORDER",
-      payload: e.target.value as SortingOrder,
-    });
+  const handleSortingOrderChange = (sortingOrder: SortingOrder) => {
+    dispatch({ type: "SET_SORTING_ORDER", payload: sortingOrder });
   };
 
-  const handleColorSystemChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: "SET_COLOR_SYSTEM",
-      payload: e.target.value as ColorSystem,
-    });
+  const handleColorSystemChange = (colorSystem: ColorSystem) => {
+    dispatch({ type: "SET_COLOR_SYSTEM", payload: colorSystem });
   };
 
   const toggleShowValues = () => {
@@ -209,6 +190,29 @@ const BubbleSortController = () => {
     dispatch({ type: "SET_STYLE_MODE", payload: styleMode });
   };
 
+  // FIXME: not working
+  const handleSort = (sortingState: SortingState) => {
+    dispatch({ type: "SET_SORTING_STATE", payload: sortingState });
+  };
+
+  const handlePause = () => {
+    dispatch({ type: "SET_SORTING_STATE", payload: "debug" });
+  };
+
+  // TODO: 2 dispatches -> 1 dispatch
+  // FIXME: not working
+  const handleNextStep = () => {
+    dispatch({ type: "NEXT_STEP_IDX" });
+    state.sortingState !== "debug" &&
+      dispatch({ type: "SET_SORTING_STATE", payload: "debug" });
+  };
+
+  // FIXME: not working
+  const handlePrevStep = () => {
+    dispatch({ type: "PREVIOUS_STEP_IDX" });
+  };
+
+  // TODO: 2 dispatches -> 1 dispatch
   const handleReset = () => {
     dispatch({ type: "RESET_STATE" });
     dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
@@ -223,28 +227,43 @@ const BubbleSortController = () => {
     dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
   }, []);
 
-  // sets array when sortingOrder changes
+  // sets array (or colorArray) when sortingOrder changes
   useEffect(() => {
-    let newArray: number[] = [...state.array];
-    switch (state.sortingOrder) {
-      case "shuffled":
-        newArray = genArray(state.arraySize, state.maxValue);
-        break;
-      case "sorted":
-        newArray.sort((a, b) => a - b);
-        break;
-      case "reversed":
-        newArray.sort((a, b) => b - a);
-        break;
+    if (state.styleMode === "default") {
+      let newArray: number[] = [...state.array];
+      switch (state.sortingOrder) {
+        case "shuffled":
+          newArray = genArray(state.arraySize, state.maxValue);
+          break;
+        case "sorted":
+          newArray.sort((a, b) => a - b);
+          break;
+        case "reversed":
+          newArray.sort((a, b) => b - a);
+          break;
+      }
+      dispatch({ type: "SET_ARRAY", payload: newArray });
+    } else {
+      let newArray: ColorValue[] = [...state.colorArray];
+      switch (state.sortingOrder) {
+        case "shuffled":
+          newArray = genColorArray(state.arraySize, state.colorSystem);
+          break;
+        case "sorted":
+          newArray.sort((a, b) => a[1] - b[1]);
+          break;
+        case "reversed":
+          newArray.sort((a, b) => b[1] - a[1]);
+          break;
+      }
+      dispatch({ type: "SET_COLOR_ARRAY", payload: newArray });
     }
-
-    dispatch({ type: "SET_ARRAY", payload: newArray });
   }, [state.sortingOrder]);
 
   // hides values (if necessary) when array size > 100
   useEffect(() => {
     if (state.arraySize > 100 && state.showValues) {
-      dispatch({ type: "HIDE_VALUES" });
+      dispatch({ type: "TOGGLE_SHOW_VALUES" });
     }
   }, [state.arraySize]);
 
@@ -263,7 +282,11 @@ const BubbleSortController = () => {
     if (state.styleMode === "color") {
       dispatch({
         type: "SET_COLOR_ARRAY",
-        payload: genColorArray(state.arraySize, state.colorSystem),
+        payload: genColorArray(
+          state.arraySize,
+          state.colorSystem,
+          state.sortingOrder
+        ),
       });
     }
   }, [state.arraySize, state.colorSystem]);
@@ -274,47 +297,72 @@ const BubbleSortController = () => {
     dispatch({ type: "SET_MAX_VALUE", payload });
   }, [state.styleMode]);
 
+  // generates a new array (or colorArray), based on the current configs, when styleMode changes
   useEffect(() => {
-    if (step < steps.length) {
-      setArray(steps[step]);
-    }
-  }, [steps, step]);
+    if (state.styleMode === "default") {
+      const array: number[] = genArray(
+        state.arraySize,
+        state.maxValue,
+        state.sortingOrder
+      );
 
+      dispatch({ type: "SET_ARRAY", payload: array });
+    } else {
+      const array: ColorValue[] = genColorArray(
+        state.arraySize,
+        state.colorSystem,
+        state.sortingOrder
+      );
+      dispatch({ type: "SET_COLOR_ARRAY", payload: array });
+    }
+  }, [state.styleMode]);
+
+  // TODO: implement logic for different scenarios
   useEffect(() => {
-    if (colorStep < colorSteps.length) {
-      setColorArray(colorSteps[colorStep]);
-    }
-  }, [colorSteps, colorStep]);
+    switch (state.sortingState) {
+      case "idle":
+        clearInterval(state.sortingTimeout);
+        break;
 
+      case "running":
+        const bubbleSortData: BubbleSortData =
+          state.styleMode === "default"
+            ? bubbleSort(state.array)
+            : bubbleSort(state.colorArray, true);
+        dispatch({ type: "SET_SORT_DATA", payload: { ...bubbleSortData } });
+
+        const arrayLength =
+          state.styleMode === "default"
+            ? state.sortingSteps.length
+            : state.colorSortingSteps.length;
+        const intervalId = setInterval(() => {
+          if (state.stepIdx + 1 >= arrayLength) {
+            dispatch({ type: "SET_SORTING_STATE", payload: "idle" });
+          } else {
+            dispatch({ type: "NEXT_STEP_IDX" });
+          }
+        }, state.delay);
+        dispatch({ type: "SET_SORTING_TIMEOUT", payload: intervalId });
+        break;
+
+      case "debug":
+        clearInterval(state.sortingTimeout);
+        break;
+    }
+  }, [state.sortingState]);
+
+  // updates array (or colorArray) when stepIdx is updated
   useEffect(() => {
-    if (sortingMode === "default") {
-      const intervalId = setInterval(() => {
-        if (colorMode) {
-          setColorStep((prev) => {
-            if (prev + 1 >= colorSteps.length) {
-              setSorting(false);
-              clearInterval(intervalId);
-              return prev;
-            } else {
-              return prev + 1;
-            }
-          });
-        } else {
-          setStep((prev) => {
-            if (prev + 1 >= steps.length) {
-              setSorting(false);
-              clearInterval(intervalId);
-              return prev;
-            } else {
-              return prev + 1;
-            }
-          });
-        }
-      }, state.delay);
-
-      setSortingTimeout(intervalId);
-    }
-  }, [steps, colorSteps]);
+    state.styleMode === "default"
+      ? dispatch({
+          type: "SET_ARRAY",
+          payload: state.sortingSteps[state.stepIdx],
+        })
+      : dispatch({
+          type: "SET_COLOR_ARRAY",
+          payload: state.colorSortingSteps[state.stepIdx],
+        });
+  }, [state.stepIdx]);
 
   return (
     <div className="flex flex-col-reverse lg:flex-row justify-center items-center lg:items-start gap-10 w-full">
@@ -323,13 +371,20 @@ const BubbleSortController = () => {
           <BarsInfo />
 
           <BubbleSortConfig
-            sorting={sorting}
-            {...state}
+            isSorting={state.sortingState === "running"}
+            arraySize={state.arraySize}
             handleArraySizeChange={handleArraySizeChange}
+            maxValue={state.maxValue}
             handleMaxValueChange={handleMaxValueChange}
+            delay={state.delay}
             handleDelayChange={handleDelayChange}
+            sortingOrder={state.sortingOrder}
             handleSortingOrderChange={handleSortingOrderChange}
+            colorSystem={state.colorSystem}
+            handleColorSystemChange={handleColorSystemChange}
+            showValues={state.showValues}
             toggleShowValues={toggleShowValues}
+            styleMode={state.styleMode}
             handleStyleModeChange={handleStyleModeChange}
           />
         </div>
@@ -338,10 +393,10 @@ const BubbleSortController = () => {
         {state.styleMode === "default" ? (
           <BubbleSortVisualizer
             array={state.array}
-            steps={steps}
-            step={step}
-            comparisons={comparisons}
-            sortedIdxs={sortedIdxs}
+            steps={state.sortingSteps}
+            step={state.stepIdx}
+            comparisons={state.comparisons}
+            sortedIdxs={state.sortedIdxs}
             maxValue={state.maxValue}
             showValues={state.showValues}
             loading={state.isArrayLoading}
@@ -349,27 +404,28 @@ const BubbleSortController = () => {
         ) : (
           <BubbleSortVisualizer
             array={state.colorArray}
-            colorMode
-            steps={colorSteps}
-            step={colorStep}
-            comparisons={comparisons}
-            sortedIdxs={sortedIdxs}
+            colorSystem={state.colorSystem}
+            steps={state.colorSortingSteps}
+            step={state.stepIdx}
+            comparisons={state.comparisons}
+            sortedIdxs={state.sortedIdxs}
             showValues={state.showValues}
             loading={state.isArrayLoading}
           />
         )}
 
         <Console
-          comparisons={state.styleMode === "default" ? step : colorStep}
-          swaps={numSwaps[state.styleMode === "default" ? step : colorStep]}
+          comparisons={state.stepIdx}
+          swaps={state.numSwaps[state.stepIdx]}
         />
 
         <Controls
-          sorting={sorting}
-          sortingMode={sortingMode}
-          step={state.styleMode === "default" ? step : colorStep}
+          sortingState={state.sortingState}
+          step={state.stepIdx}
           steps={
-            state.styleMode === "default" ? steps.length : colorSteps.length
+            state.styleMode === "default"
+              ? state.sortingSteps.length
+              : state.colorSortingSteps.length
           }
           handleSort={handleSort}
           handleNextStep={handleNextStep}
