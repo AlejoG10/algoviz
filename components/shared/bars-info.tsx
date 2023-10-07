@@ -23,7 +23,7 @@ const BarsInfo = () => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   return (
-    <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl p-4 w-full">
+    <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl p-4 w-full h-fit">
       <div className="relative flex flex-col gap-y-4 w-full h-full">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold">Color Meaning</h2>

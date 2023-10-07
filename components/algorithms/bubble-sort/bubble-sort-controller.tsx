@@ -43,11 +43,7 @@ const BubbleSortController = () => {
     []
   );
 
-  const [stats, setStats] = useState<{
-    startedAt: Date | null;
-    timeElapsed: number;
-    swaps: number[];
-  }>({ startedAt: null, timeElapsed: 0, swaps: [0] });
+  const [numSwaps, setNumSwaps] = useState<number[]>([0]);
 
   const handleReset = () => {
     setLoadingArray(true);
@@ -79,7 +75,7 @@ const BubbleSortController = () => {
     setComparisons([0]);
     setSortedIdxs([]);
 
-    setStats({ startedAt: null, timeElapsed: 0, swaps: [0] });
+    setNumSwaps([0]);
 
     setLoadingArray(false);
   };
@@ -150,7 +146,7 @@ const BubbleSortController = () => {
     setComparisons(comparisons);
     setSortedIdxs(sortedIdxs);
 
-    setStats((prev) => ({ ...prev, swaps: numSwaps }));
+    setNumSwaps(numSwaps);
   };
 
   const handleNextStep = () => {
@@ -162,7 +158,10 @@ const BubbleSortController = () => {
     colorMode ? setColorStep((prev) => prev - 1) : setStep((prev) => prev - 1);
   };
 
-  const handlePause = () => {};
+  const handlePause = () => {
+    clearInterval(sortingTimeout);
+    setSortingMode("debug");
+  };
 
   useEffect(() => {
     if (arraySize > 100) setShowValues(false);
@@ -222,30 +221,13 @@ const BubbleSortController = () => {
   }, [steps, colorSteps]);
 
   useEffect(() => {
-    let timerId: any;
-
-    if (sorting && sortingMode === "default") {
-      const startedAt = Date.now();
-
-      timerId = setInterval(() => {
-        setStats((prev) => ({
-          ...prev,
-          timeElapsed: Date.now() - startedAt,
-        }));
-      }, 1);
-    }
-
-    return () => clearInterval(timerId);
-  }, [sorting]);
-
-  useEffect(() => {
     setLoadingArray(false);
   }, []);
 
   return (
     <div className="flex flex-col-reverse lg:flex-row justify-center items-center lg:items-start gap-10 w-full">
-      <div className="w-full lg:max-w-[400px] max-h-[700px] overflow-scroll">
-        <div className="flex flex-row lg:flex-col items-center gap-8 bg-neutral-100 rounded-lg p-4 w-full h-full">
+      <div className="w-full lg:max-w-[400px] h-[685px]">
+        <div className="flex flex-wrap lg:flex-nowrap lg:flex-col lg:items-center gap-8 bg-neutral-100 rounded-lg p-4 w-full h-full overflow-scroll">
           <BarsInfo />
 
           <BubbleSortConfig
@@ -295,9 +277,8 @@ const BubbleSortController = () => {
         )}
 
         <Console
-          time={stats.timeElapsed}
           comparisons={colorMode ? colorStep : step}
-          swaps={stats.swaps[colorMode ? colorStep : step]}
+          swaps={numSwaps[colorMode ? colorStep : step]}
         />
 
         <Controls

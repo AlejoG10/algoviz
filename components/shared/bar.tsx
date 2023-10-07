@@ -36,7 +36,7 @@ const Bar: React.FC<BarProps> = ({
   return (
     <div
       style={styles}
-      className={`relative flex justify-center items-center rounded-t-md w-full
+      className={`relative flex justify-center items-center rounded-t-sm md:rounded-t-md w-full
         ${!color && isSorted ? "bg-green-500" : "bg-neutral-800 "}
         ${!color && leftComparison && "bg-orange-400"} 
         ${!color && rightComparison && "bg-rose-500"} 
