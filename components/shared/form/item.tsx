@@ -24,7 +24,7 @@ const Item: React.FC<ItemProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-x-5">
-      <Label htmlFor={name} multicolor={multicolorLabel}>
+      <Label htmlFor={name} multicolor={multicolorLabel} className="w-24">
         {label}
       </Label>
       <input

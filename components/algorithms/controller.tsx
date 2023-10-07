@@ -14,7 +14,7 @@ const Controller = () => {
   switch (algo) {
     case "bubble-sort":
       return (
-        <div className="flex flex-col gap-y-16">
+        <div className="flex flex-col gap-y-16 w-full">
           <BubbleSortController />
           <hr />
           <BubbleSortInfo />
