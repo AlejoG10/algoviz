@@ -1,5 +1,7 @@
 export declare global {
+    type SortingOrder = "shuffled" | "sorted" | "reversed"
     type SortingMode = "default" | "debug"
-
-    type Color = [string, number, number, number] // HSL
+    type StyleMode = "default" | "color"
+    type ColorSystem = "HEX" | "HSL" | "RGB"
+    type ColorValue = [string, number] // HSL, HEX, RGB
 }

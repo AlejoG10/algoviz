@@ -17,20 +17,14 @@ interface BubbleSortConfigProps {
   delay: number;
   handleDelayChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
-  shuffledArray: boolean;
-  handleShuffledArrayChange: () => void;
-
-  sortedArray: boolean;
-  handleSortedArrayChange: () => void;
-
-  reversedArray: boolean;
-  handleReversedArrayChange: () => void;
+  sortingOrder: SortingOrder;
+  handleSortingOrderChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
   showValues: boolean;
-  handleShowValuesChange: () => void;
+  toggleShowValues: () => void;
 
-  colorMode: boolean;
-  handleColorModeChange: () => void;
+  styleMode: StyleMode;
+  handleStyleModeChange: (styleMode: StyleMode) => void;
 }
 
 const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
@@ -45,20 +39,14 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
   delay,
   handleDelayChange,
 
-  shuffledArray,
-  handleShuffledArrayChange,
-
-  sortedArray,
-  handleSortedArrayChange,
-
-  reversedArray,
-  handleReversedArrayChange,
+  sortingOrder,
+  handleSortingOrderChange,
 
   showValues,
-  handleShowValuesChange,
+  toggleShowValues,
 
-  colorMode,
-  handleColorModeChange,
+  styleMode,
+  handleStyleModeChange,
 }) => {
   const MIN_ARRAY_SIZE = 3;
   const MAX_ARRAY_SIZE = 500;
@@ -68,39 +56,47 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
   const MAX_DELAY = 1000;
   const DELAY_STEP = 100;
 
-  const startingOrder: Radio[] = [
+  const colorStyle = styleMode === "color";
+
+  const sortingOrderRadio: Radio[] = [
     {
       label: "Shuffled",
-      checked: shuffledArray,
-      onChange: handleShuffledArrayChange,
+      value: "shuffled",
+      checked: sortingOrder === "shuffled",
+      onChange: () => handleSortingOrderChange,
     },
     {
       label: "Sorted",
-      checked: sortedArray,
-      onChange: handleSortedArrayChange,
+      value: "sorted",
+      checked: sortingOrder === "sorted",
+      onChange: () => handleSortingOrderChange,
     },
     {
       label: "Reversed",
-      checked: reversedArray,
-      onChange: handleReversedArrayChange,
+      value: "reversed",
+      checked: sortingOrder === "reversed",
+      onChange: () => handleSortingOrderChange,
     },
   ];
 
-  const sortingStrategy: Radio[] = [
+  const sortingStrategyRadio: Radio[] = [
     {
       label: "Shades",
+      value: "HEX",
       checked: true,
-      onChange: handleShuffledArrayChange,
+      onChange: () => {},
     },
     {
       label: "Hue-based",
+      value: "HSL",
       checked: false,
-      onChange: handleSortedArrayChange,
+      onChange: () => {},
     },
     {
       label: "Luminance-based",
+      value: "RGB",
       checked: false,
-      onChange: handleShuffledArrayChange,
+      onChange: () => {},
     },
   ];
 
@@ -116,7 +112,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         onChange={handleArraySizeChange}
         disabled={sorting}
       />
-      {!colorMode && (
+      {!colorStyle && (
         <RangeGroup
           label="Max value:"
           name="maxValue"
@@ -124,7 +120,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
           max={MAX_MAX_VALUE}
           value={maxValue}
           onChange={handleMaxValueChange}
-          disabled={sorting || colorMode}
+          disabled={sorting || colorStyle}
         />
       )}
       <RangeGroup
@@ -140,17 +136,17 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
       <hr />
       <RadioGroup
         label="Starting order:"
-        name="startingOrder"
-        radioGroup={startingOrder}
+        name="sortingOrderRadio"
+        radioGroup={sortingOrderRadio}
         disabled={sorting}
       />
-      {colorMode && (
+      {colorStyle && (
         <>
           <hr />
           <RadioGroup
             label="Sorting strategy:"
-            name="sortingStrategy"
-            radioGroup={sortingStrategy}
+            name="sortingStrategyRadio"
+            radioGroup={sortingStrategyRadio}
             disabled={sorting}
           />
         </>
@@ -160,14 +156,14 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         label="Show values:"
         name="showValues"
         checked={showValues}
-        onChange={handleShowValuesChange}
+        onChange={toggleShowValues}
         disabled={sorting || arraySize > 100}
       />
       <hr />
-      {colorMode ? (
+      {colorStyle ? (
         <Button
           className="bg-neutral-800 hover:bg-neutral-900"
-          onClick={handleColorModeChange}
+          onClick={() => handleStyleModeChange("default")}
           disabled={sorting}
         >
           Default mode
@@ -180,7 +176,9 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
               <div className="text-center font-medium">
                 Color sorting is extremely challenging
               </div>
-              <div className="text-center text-sm">results are not visually perfect</div>
+              <div className="text-center text-sm">
+                results are not visually perfect
+              </div>
             </div>
           }
           color="secondary"
@@ -188,7 +186,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         >
           <Button
             className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 w-full"
-            onClick={handleColorModeChange}
+            onClick={() => handleStyleModeChange("color")}
             disabled={sorting}
           >
             Try color mode!

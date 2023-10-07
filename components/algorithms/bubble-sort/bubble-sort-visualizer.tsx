@@ -12,7 +12,7 @@ interface BubbleSortVisualizerPropsBase {
 
 interface BubbleSortColorModeVisualizerProps
   extends BubbleSortVisualizerPropsBase {
-  array: Color[];
+  array: ColorValue[];
   maxValue?: never;
   steps: BubbleSortData["colorSteps"];
   colorMode: true;
@@ -51,7 +51,7 @@ const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
   return (
     <Visualizer height={HEIGHT} loading={loading}>
       {colorMode
-        ? array.map((value: Color, i) => {
+        ? array.map((value: ColorValue, i) => {
             return (
               <Bar
                 key={i}

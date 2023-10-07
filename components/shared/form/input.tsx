@@ -1,5 +1,6 @@
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
+// TODO: accept {...props}
 const Input: React.FC<InputProps> = ({
   name,
   type,
