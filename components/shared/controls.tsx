@@ -17,7 +17,7 @@ interface ControlsProps {
   sortingState: SortingState;
   step: number;
   steps: number;
-  handleSort: (sortingState: SortingState) => void;
+  handleSort: () => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
   handlePause: () => void;
@@ -35,7 +35,7 @@ const Controls: React.FC<ControlsProps> = ({
   handleReset,
 }) => {
   const progress = useMemo(() => (step / steps) * 100, [step, steps]);
-  const allSorted = step !== 0 && step === steps - 1;
+  const allSorted = step !== 0 && step >= steps;
 
   return (
     <div className="flex flex-col items-center gap-y-4 w-full">
@@ -90,7 +90,7 @@ const Controls: React.FC<ControlsProps> = ({
                 <Button
                   circle
                   bgColor="green"
-                  onClick={() => handleSort("running")}
+                  onClick={handleSort}
                   disabled={allSorted}
                 >
                   <Play size={20} className="pl-px" />

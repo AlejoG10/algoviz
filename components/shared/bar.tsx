@@ -36,7 +36,7 @@ const Bar: React.FC<BarProps> = ({
   return (
     <div
       style={styles}
-      className={`relative flex justify-center items-center rounded-t-sm lg:rounded-t-md w-full
+      className={`flex justify-center items-center rounded-t-sm lg:rounded-t-md w-full
         ${!color && isSorted ? "bg-green-500" : "bg-neutral-800 "}
         ${!color && leftComparison && "bg-orange-400"} 
         ${!color && rightComparison && "bg-rose-500"} 
@@ -50,7 +50,7 @@ const Bar: React.FC<BarProps> = ({
 
       {color && (
         <span
-          className={`absolute -bottom-6 rounded-full w-3 h-3
+          className={`absolute bottom-2 rounded-full w-3 h-3
             ${isSorted && "bg-green-500"}
             ${leftComparison && "bg-orange-400"}
             ${rightComparison && "bg-rose-400"}

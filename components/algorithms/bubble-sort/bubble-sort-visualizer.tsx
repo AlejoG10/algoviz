@@ -3,7 +3,7 @@ import Visualizer from "@/components/shared/visualizer";
 import Bar from "@/components/shared/bar";
 
 interface BubbleSortVisualizerPropsBase {
-  step: number;
+  stepIdx: number;
   comparisons: BubbleSortData["comparisons"];
   sortedIdxs: BubbleSortData["sortedIdxs"];
   showValues: boolean;
@@ -14,7 +14,7 @@ interface BubbleSortColorModeVisualizerProps
   extends BubbleSortVisualizerPropsBase {
   array: ColorValue[];
   maxValue?: never;
-  steps: BubbleSortData["colorSortingSteps"];
+  stepsLength: number;
   colorSystem: ColorSystem;
 }
 
@@ -22,7 +22,7 @@ interface BubbleSortBaseModeVisualizerProps
   extends BubbleSortVisualizerPropsBase {
   array: number[];
   maxValue: number;
-  steps: BubbleSortData["sortingSteps"];
+  stepsLength: number;
   colorSystem?: never;
 }
 
@@ -33,8 +33,8 @@ type BubbleSortVisualizerProps =
 const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
   array,
   colorSystem,
-  steps,
-  step,
+  stepIdx,
+  stepsLength,
   comparisons,
   sortedIdxs,
   maxValue,
@@ -43,10 +43,10 @@ const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
 }) => {
   const HEIGHT = 400;
 
-  const isLeftComparison = (i: number) => comparisons[step] === i;
-  const isRightComparison = (i: number) => comparisons[step] === i - 1;
-  const isSorted = (i: number) => i >= array.length - sortedIdxs[step];
-  const allSorted = () => step !== 0 && step === steps.length - 1;
+  const isLeftComparison = (i: number) => comparisons[stepIdx] === i;
+  const isRightComparison = (i: number) => comparisons[stepIdx] === i - 1;
+  const isSorted = (i: number) => i >= array.length - sortedIdxs[stepIdx];
+  const allSorted = () => stepIdx !== 0 && stepIdx >= stepsLength;
 
   return (
     <Visualizer height={HEIGHT} loading={loading}>

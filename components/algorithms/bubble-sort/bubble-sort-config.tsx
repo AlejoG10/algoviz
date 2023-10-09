@@ -155,7 +155,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         name="showValues"
         checked={showValues}
         onChange={toggleShowValues}
-        disabled={isSorting || arraySize > 100}
+        disabled={arraySize > 100}
       />
       <hr />
       {styleMode === "default" ? (

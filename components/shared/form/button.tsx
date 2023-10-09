@@ -15,18 +15,14 @@ const Button: React.FC<ButtonProps> = ({
   return (
     <button
       type={type}
-      className={`flex justify-center items-center text-white p-2 
-        ${
-          bgColor === "indigo" &&
-          "bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-200"
-        }
+      className={`flex justify-center items-center text-white p-2 disabled:opacity-50
         ${
           bgColor === "green" &&
-          "bg-green-500 hover:bg-green-600 disabled:bg-green-200"
+          "bg-green-500 hover:bg-green-600 focus:bg-green-600 focus:outline-none"
         }
         ${
           bgColor === "red" &&
-          "bg-rose-500 hover:bg-rose-600 disabled:bg-rose-200"
+          "bg-rose-500 hover:bg-rose-600 focus:bg-rose-600 focus:outline-none"
         }
         ${circle ? "rounded-full" : "rounded-md"}
         ${className}`}
