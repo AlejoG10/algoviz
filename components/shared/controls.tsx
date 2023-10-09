@@ -15,8 +15,8 @@ import Button from "./form/button";
 
 interface ControlsProps {
   sortingState: SortingState;
-  step: number;
-  steps: number;
+  stepIdx: number;
+  stepsLength: number;
   handleSort: () => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
@@ -26,16 +26,16 @@ interface ControlsProps {
 
 const Controls: React.FC<ControlsProps> = ({
   sortingState,
-  step,
-  steps,
+  stepIdx,
+  stepsLength,
   handleSort,
   handleNextStep,
   handlePrevStep,
   handlePause,
   handleReset,
 }) => {
-  const progress = useMemo(() => (step / steps) * 100, [step, steps]);
-  const allSorted = step !== 0 && step >= steps;
+  const progress = useMemo(() => (stepIdx / stepsLength) * 100, [stepIdx, stepsLength]);
+  const allSorted = stepIdx !== 0 && stepIdx >= stepsLength;
 
   return (
     <div className="flex flex-col items-center gap-y-4 w-full">
@@ -59,7 +59,7 @@ const Controls: React.FC<ControlsProps> = ({
                 circle
                 bgColor="green"
                 onClick={handlePrevStep}
-                disabled={sortingState === "running" || step === 0}
+                disabled={sortingState === "running" || stepIdx === 0}
               >
                 <ChevronsLeft size={20} />
               </Button>

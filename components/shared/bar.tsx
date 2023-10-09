@@ -1,4 +1,4 @@
-interface BarPropsBase {
+interface BaseProps {
   maxHeight: number;
   value: number;
   maxValue: number;
@@ -8,15 +8,15 @@ interface BarPropsBase {
   isSorted: boolean;
 }
 
-interface ColorModeBarProps extends BarPropsBase {
-  color: string;
-}
-
-interface BaseModeBarProps extends BarPropsBase {
+interface DefaultModeBarProps extends BaseProps {
   color?: never;
 }
 
-type BarProps = ColorModeBarProps | BaseModeBarProps;
+interface ColorModeBarProps extends BaseProps {
+  color: string;
+}
+
+type BarProps = DefaultModeBarProps | ColorModeBarProps;
 
 const Bar: React.FC<BarProps> = ({
   maxHeight,

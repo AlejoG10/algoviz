@@ -1,12 +1,12 @@
 import Loader from "../loader";
 
-interface VisualizerProps {
+interface VisualizerContainerProps {
   height: number;
   loading: boolean;
   children: React.ReactNode;
 }
 
-const Visualizer: React.FC<VisualizerProps> = ({
+const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
   height,
   loading,
   children,
@@ -27,4 +27,4 @@ const Visualizer: React.FC<VisualizerProps> = ({
   );
 };
 
-export default Visualizer;
+export default VisualizerContainer;

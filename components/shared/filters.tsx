@@ -59,17 +59,13 @@ const Filters = () => {
     },
   ];
 
-  const handleClick = (id: string) => {
-    setActive(id);
-  };
-
   useEffect(() => {
     router.push(`?algo=${active}`);
   }, [active]);
 
   return (
-    <div className="flex justify-center items-center bg-white border-y border-neutral-200 px-4 sm:px-8 w-full">
-      <div className="flex items-center gap-x-5 overflow-x-scroll no-scrollbar">
+    <div className="flex justify-center items-center bg-white border-y border-neutral-200 px-4 sm:px-8 mb-10 w-full">
+      <div className="flex items-center gap-x-4 lg:gap-x-6 xl:gap-x-8 2xl:gap-x-10 overflow-x-scroll no-scrollbar">
         {filters.map((filter) => {
           const Icon = filter.icon;
 
@@ -81,7 +77,7 @@ const Filters = () => {
                   ? "text-neutral-800 border-b-2"
                   : "text-neutral-500 hover:text-neutral-800"
               }`}
-              onClick={() => handleClick(filter.id)}
+              onClick={() => setActive(filter.id)}
             >
               <Icon size={32} strokeWidth={1.5} />
               <h1 className="text-sm font-medium">{filter.name}</h1>

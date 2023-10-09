@@ -1,34 +1,30 @@
-import { BubbleSortData } from "@/lib/algorithms/bubble-sort";
-import Visualizer from "@/components/shared/visualizer";
+import VisualizerContainer from "@/components/shared/containers/visualizer-container";
 import Bar from "@/components/shared/bar";
 
-interface BubbleSortVisualizerPropsBase {
+interface BaseProps {
   stepIdx: number;
-  comparisons: BubbleSortData["comparisons"];
-  sortedIdxs: BubbleSortData["sortedIdxs"];
-  showValues: boolean;
-  loading: boolean;
-}
-
-interface BubbleSortColorModeVisualizerProps
-  extends BubbleSortVisualizerPropsBase {
-  array: ColorValue[];
-  maxValue?: never;
   stepsLength: number;
-  colorSystem: ColorSystem;
+  comparisons: number[];
+  sortedIdxs: number[];
+  showValues: boolean;
+  isArrayLoading: boolean;
 }
 
-interface BubbleSortBaseModeVisualizerProps
-  extends BubbleSortVisualizerPropsBase {
+interface DefaultModeVisualizerProps extends BaseProps {
   array: number[];
   maxValue: number;
-  stepsLength: number;
   colorSystem?: never;
 }
 
+interface ColorModeVisualizerProps extends BaseProps {
+  array: ColorValue[];
+  maxValue?: never;
+  colorSystem: ColorSystem;
+}
+
 type BubbleSortVisualizerProps =
-  | BubbleSortColorModeVisualizerProps
-  | BubbleSortBaseModeVisualizerProps;
+  | DefaultModeVisualizerProps
+  | ColorModeVisualizerProps;
 
 const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
   array,
@@ -39,7 +35,7 @@ const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
   sortedIdxs,
   maxValue,
   showValues,
-  loading,
+  isArrayLoading,
 }) => {
   const HEIGHT = 400;
 
@@ -49,11 +45,12 @@ const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
   const allSorted = () => stepIdx !== 0 && stepIdx >= stepsLength;
 
   return (
-    <Visualizer height={HEIGHT} loading={loading}>
+    <VisualizerContainer height={HEIGHT} loading={isArrayLoading}>
       {colorSystem
         ? array.map((value: ColorValue, i) => {
             const maxValue =
               colorSystem === "HEX" ? 148 : colorSystem === "HSL" ? 360 : 255;
+
             return (
               <Bar
                 key={i}
@@ -82,7 +79,7 @@ const BubbleSortVisualizer: React.FC<BubbleSortVisualizerProps> = ({
               />
             );
           })}
-    </Visualizer>
+    </VisualizerContainer>
   );
 };
 

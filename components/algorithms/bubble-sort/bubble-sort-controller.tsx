@@ -4,6 +4,9 @@ import { useEffect, useReducer } from "react";
 
 import { genArray, genColorArray } from "@/lib/utils";
 import bubbleSort, { BubbleSortData } from "@/lib/algorithms/bubble-sort";
+import ControllerContainer from "@/components/shared/containers/controller-container";
+import SidebarContainer from "@/components/shared/containers/sidebar-container";
+import PlaygroundContainer from "@/components/shared/containers/playground-container";
 import BarsInfo from "@/components/shared/bars-info";
 import Console from "@/components/shared/console";
 import Controls from "@/components/shared/controls";
@@ -428,31 +431,28 @@ const BubbleSortController = () => {
   }, [state.stepIdx]);
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row justify-center items-center lg:items-start gap-10 w-full">
-      <div className="w-full lg:max-w-[400px] h-[685px]">
-        <div className="flex flex-wrap lg:flex-nowrap lg:flex-col lg:items-center gap-8 bg-neutral-100 rounded-lg p-4 w-full h-full overflow-scroll">
-          <BarsInfo />
-
-          <BubbleSortConfig
-            isSorting={state.sortingState !== "idle"}
-            arraySize={state.arraySize}
-            handleArraySizeChange={handleArraySizeChange}
-            maxValue={state.maxValue}
-            handleMaxValueChange={handleMaxValueChange}
-            delay={state.delay}
-            handleDelayChange={handleDelayChange}
-            sortingOrder={state.sortingOrder}
-            handleSortingOrderChange={handleSortingOrderChange}
-            colorSystem={state.colorSystem}
-            handleColorSystemChange={handleColorSystemChange}
-            showValues={state.showValues}
-            toggleShowValues={toggleShowValues}
-            styleMode={state.styleMode}
-            handleStyleModeChange={handleStyleModeChange}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-y-8 w-full">
+    <ControllerContainer>
+      <SidebarContainer>
+        <BarsInfo />
+        <BubbleSortConfig
+          sortingState={state.sortingState}
+          arraySize={state.arraySize}
+          maxValue={state.maxValue}
+          delay={state.delay}
+          sortingOrder={state.sortingOrder}
+          colorSystem={state.colorSystem}
+          styleMode={state.styleMode}
+          showValues={state.showValues}
+          handleArraySizeChange={handleArraySizeChange}
+          handleMaxValueChange={handleMaxValueChange}
+          handleDelayChange={handleDelayChange}
+          handleSortingOrderChange={handleSortingOrderChange}
+          handleColorSystemChange={handleColorSystemChange}
+          toggleShowValues={toggleShowValues}
+          handleStyleModeChange={handleStyleModeChange}
+        />
+      </SidebarContainer>
+      <PlaygroundContainer>
         {state.styleMode === "default" ? (
           <BubbleSortVisualizer
             array={state.array}
@@ -462,18 +462,18 @@ const BubbleSortController = () => {
             sortedIdxs={state.sortedIdxs}
             maxValue={state.maxValue}
             showValues={state.showValues}
-            loading={state.isArrayLoading}
+            isArrayLoading={state.isArrayLoading}
           />
         ) : (
           <BubbleSortVisualizer
-            colorSystem={state.colorSystem}
             array={state.colorArray}
+            colorSystem={state.colorSystem}
             stepIdx={state.stepIdx}
-            stepsLength={state.colorSortingSteps.length}
+            stepsLength={state.sortingSteps.length}
             comparisons={state.comparisons}
             sortedIdxs={state.sortedIdxs}
             showValues={state.showValues}
-            loading={state.isArrayLoading}
+            isArrayLoading={state.isArrayLoading}
           />
         )}
 
@@ -484,8 +484,8 @@ const BubbleSortController = () => {
 
         <Controls
           sortingState={state.sortingState}
-          step={state.stepIdx}
-          steps={
+          stepIdx={state.stepIdx}
+          stepsLength={
             state.styleMode === "default"
               ? state.sortingSteps.length
               : state.colorSortingSteps.length
@@ -496,8 +496,8 @@ const BubbleSortController = () => {
           handlePause={handlePause}
           handleReset={handleReset}
         />
-      </div>
-    </div>
+      </PlaygroundContainer>
+    </ControllerContainer>
   );
 };
 

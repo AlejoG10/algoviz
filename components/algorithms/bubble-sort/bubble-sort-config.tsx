@@ -1,4 +1,4 @@
-import Config from "@/components/shared/config";
+import ConfigContainer from "@/components/shared/containers/config-container";
 import RangeGroup from "@/components/shared/form/range-group";
 import RadioGroup, { Radio } from "@/components/shared/form/radio-group";
 import CheckboxGroup from "@/components/shared/form/checkbox-group";
@@ -6,32 +6,25 @@ import Button from "@/components/shared/form/button";
 import MyTooltip from "@/components/shared/my-tooltip";
 
 interface BubbleSortConfigProps {
-  isSorting: boolean;
-
+  sortingState: SortingState;
   arraySize: number;
-  handleArraySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-
   maxValue: number;
-  handleMaxValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-
   delay: number;
-  handleDelayChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-
   sortingOrder: SortingOrder;
-  handleSortingOrderChange: (sortingOrder: SortingOrder) => void;
-
   colorSystem: ColorSystem;
-  handleColorSystemChange: (colorSystem: ColorSystem) => void;
-
   styleMode: StyleMode;
-  handleStyleModeChange: (styleMode: StyleMode) => void;
-
   showValues: boolean;
+  handleArraySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleMaxValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleDelayChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSortingOrderChange: (sortingOrder: SortingOrder) => void;
+  handleColorSystemChange: (colorSystem: ColorSystem) => void;
+  handleStyleModeChange: (styleMode: StyleMode) => void;
   toggleShowValues: () => void;
 }
 
 const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
-  isSorting,
+  sortingState,
 
   arraySize,
   handleArraySizeChange,
@@ -99,8 +92,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
   ];
 
   return (
-    <Config>
-      <hr />
+    <ConfigContainer>
       <RangeGroup
         label="Array size:"
         name="arraySize"
@@ -108,7 +100,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         max={MAX_ARRAY_SIZE}
         value={arraySize}
         onChange={handleArraySizeChange}
-        disabled={isSorting}
+        disabled={sortingState !== "idle"}
       />
       {styleMode === "default" && (
         <RangeGroup
@@ -118,7 +110,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
           max={MAX_MAX_VALUE}
           value={maxValue}
           onChange={handleMaxValueChange}
-          disabled={isSorting}
+          disabled={sortingState !== "idle"}
         />
       )}
       <RangeGroup
@@ -129,14 +121,14 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         step={DELAY_STEP}
         value={delay}
         onChange={handleDelayChange}
-        disabled={isSorting}
+        disabled={sortingState !== "idle"}
       />
       <hr />
       <RadioGroup
         label="Starting order:"
         name="sortingOrderRadio"
         radioGroup={sortingOrderRadio}
-        disabled={isSorting}
+        disabled={sortingState !== "idle"}
       />
       {styleMode === "color" && (
         <>
@@ -145,7 +137,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
             label="Sorting strategy:"
             name="sortingStrategyRadio"
             radioGroup={sortingStrategyRadio}
-            disabled={isSorting}
+            disabled={sortingState !== "idle"}
           />
         </>
       )}
@@ -177,7 +169,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
           <Button
             className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 w-full"
             onClick={() => handleStyleModeChange("color")}
-            disabled={isSorting}
+            disabled={sortingState !== "idle"}
           >
             Try color mode!
           </Button>
@@ -186,12 +178,12 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         <Button
           className="bg-neutral-800 hover:bg-neutral-900"
           onClick={() => handleStyleModeChange("default")}
-          disabled={isSorting}
+          disabled={sortingState !== "idle"}
         >
           Default mode
         </Button>
       )}
-    </Config>
+    </ConfigContainer>
   );
 };
 

@@ -15,12 +15,31 @@ const BarInfo: React.FC<BarInfoProps> = ({ label, className }) => (
     <div
       className={`ring-2 ring-offset-4 rounded-full aspect-square w-[18px] ${className}`}
     />
-    <p className="text-neutral-800 font-medium">{label}</p>
+    <p className="text-neutral-800">{label}</p>
   </div>
 );
 
-const BarsInfo = () => {
+interface BarsInfoProps {
+  barsInfo?: BarInfoProps[];
+}
+
+const BarsInfo: React.FC<BarsInfoProps> = ({ barsInfo }) => {
   const [expanded, setExpanded] = useState<boolean>(true);
+
+  const defaultBars: BarInfoProps[] = [
+    {
+      label: "Current maximum",
+      className: "bg-orange-500 ring-orange-500",
+    },
+    {
+      label: "Comparison element",
+      className: "bg-rose-500 ring-rose-500",
+    },
+    {
+      label: "Correct position (sorted)",
+      className: "bg-green-500 ring-green-500",
+    },
+  ];
 
   return (
     <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl p-4 w-full h-fit">
@@ -42,18 +61,13 @@ const BarsInfo = () => {
         {expanded && (
           <>
             <hr />
-            <BarInfo
-              label="Current maximum"
-              className="bg-orange-500 ring-orange-500"
-            />
-            <BarInfo
-              label="Comparison element"
-              className="bg-rose-500 ring-rose-500"
-            />
-            <BarInfo
-              label="Correct position (sorted)"
-              className="bg-green-500 ring-green-500"
-            />
+            {barsInfo
+              ? barsInfo.map((barInfo) => (
+                  <BarInfo key={barInfo.label} {...barInfo} />
+                ))
+              : defaultBars.map((barInfo) => (
+                  <BarInfo key={barInfo.label} {...barInfo} />
+                ))}
           </>
         )}
       </div>
