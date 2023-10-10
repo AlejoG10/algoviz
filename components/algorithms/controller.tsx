@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 
-import BubbleSortController from "./bubble-sort/bubble-sort-controller";
+import SortingController from "./sorting-algorithms/sorting-controller";
 
 const Controller = () => {
   const searchParams = useSearchParams();
@@ -12,7 +12,10 @@ const Controller = () => {
 
   switch (algo) {
     case "bubble-sort":
-      return <BubbleSortController />;
+      return <SortingController />;
+
+    case "selection-sort":
+      return <SortingController />;
   }
 };
 

@@ -72,7 +72,7 @@ const Filters = () => {
           return (
             <button
               key={filter.id}
-              className={`flex flex-col items-center gap-y-4 border-neutral-800 py-5 w-28 min-w-[112px] h-full ${
+              className={`flex flex-col items-center gap-y-4 border-neutral-800 py-5 w-28 min-w-[112px] h-full focus:outline-none ${
                 filter.id === active
                   ? "text-neutral-800 border-b-2"
                   : "text-neutral-500 hover:text-neutral-800"

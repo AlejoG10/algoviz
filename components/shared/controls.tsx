@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Progress } from "@nextui-org/react";
 import {
   ChevronsLeft,
@@ -14,7 +14,7 @@ import MyTooltip from "./my-tooltip";
 import Button from "./form/button";
 
 interface ControlsProps {
-  sortingState: SortingState;
+  sortingStatus: SortingStatus;
   stepIdx: number;
   stepsLength: number;
   handleSort: () => void;
@@ -25,7 +25,7 @@ interface ControlsProps {
 }
 
 const Controls: React.FC<ControlsProps> = ({
-  sortingState,
+  sortingStatus,
   stepIdx,
   stepsLength,
   handleSort,
@@ -34,8 +34,32 @@ const Controls: React.FC<ControlsProps> = ({
   handlePause,
   handleReset,
 }) => {
-  const progress = useMemo(() => (stepIdx / stepsLength) * 100, [stepIdx, stepsLength]);
+  const progress = useMemo(
+    () => (stepIdx / stepsLength) * 100,
+    [stepIdx, stepsLength]
+  );
   const allSorted = stepIdx !== 0 && stepIdx >= stepsLength;
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === " " || event.key === "Enter") {
+        if (sortingStatus !== "running") {
+          !allSorted && handleSort();
+        } else {
+          !allSorted && handlePause();
+        }
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+        sortingStatus !== "running" && stepIdx > 0 && handlePrevStep();
+      } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+        sortingStatus !== "running" && !allSorted && handleNextStep();
+      } else if (event.key === "Backspace") {
+        handleReset();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [handleNextStep, handlePrevStep]);
 
   return (
     <div className="flex flex-col items-center gap-y-4 w-full">
@@ -59,12 +83,12 @@ const Controls: React.FC<ControlsProps> = ({
                 circle
                 bgColor="green"
                 onClick={handlePrevStep}
-                disabled={sortingState === "running" || stepIdx === 0}
+                disabled={sortingStatus === "running" || stepIdx === 0}
               >
                 <ChevronsLeft size={20} />
               </Button>
             </MyTooltip>
-            {sortingState === "running" ? (
+            {sortingStatus === "running" ? (
               <MyTooltip
                 placement="bottom"
                 content="pause sorting"
@@ -107,7 +131,7 @@ const Controls: React.FC<ControlsProps> = ({
                 circle
                 bgColor="green"
                 onClick={handleNextStep}
-                disabled={sortingState === "running" || allSorted}
+                disabled={sortingStatus === "running" || allSorted}
               >
                 <ChevronsRight size={20} />
               </Button>

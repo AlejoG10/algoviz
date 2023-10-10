@@ -5,8 +5,8 @@ import CheckboxGroup from "@/components/shared/form/checkbox-group";
 import Button from "@/components/shared/form/button";
 import MyTooltip from "@/components/shared/my-tooltip";
 
-interface BubbleSortConfigProps {
-  sortingState: SortingState;
+interface SortingConfigProps {
+  sortingStatus: SortingStatus;
   arraySize: number;
   maxValue: number;
   delay: number;
@@ -23,8 +23,8 @@ interface BubbleSortConfigProps {
   toggleShowValues: () => void;
 }
 
-const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
-  sortingState,
+const SortingConfig: React.FC<SortingConfigProps> = ({
+  sortingStatus,
 
   arraySize,
   handleArraySizeChange,
@@ -100,7 +100,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         max={MAX_ARRAY_SIZE}
         value={arraySize}
         onChange={handleArraySizeChange}
-        disabled={sortingState !== "idle"}
+        disabled={sortingStatus !== "idle"}
       />
       {styleMode === "default" && (
         <RangeGroup
@@ -110,7 +110,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
           max={MAX_MAX_VALUE}
           value={maxValue}
           onChange={handleMaxValueChange}
-          disabled={sortingState !== "idle"}
+          disabled={sortingStatus !== "idle"}
         />
       )}
       <RangeGroup
@@ -121,14 +121,14 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         step={DELAY_STEP}
         value={delay}
         onChange={handleDelayChange}
-        disabled={sortingState !== "idle"}
+        disabled={sortingStatus !== "idle"}
       />
       <hr />
       <RadioGroup
         label="Starting order:"
         name="sortingOrderRadio"
         radioGroup={sortingOrderRadio}
-        disabled={sortingState !== "idle"}
+        disabled={sortingStatus !== "idle"}
       />
       {styleMode === "color" && (
         <>
@@ -137,7 +137,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
             label="Sorting strategy:"
             name="sortingStrategyRadio"
             radioGroup={sortingStrategyRadio}
-            disabled={sortingState !== "idle"}
+            disabled={sortingStatus !== "idle"}
           />
         </>
       )}
@@ -169,7 +169,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
           <Button
             className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 w-full"
             onClick={() => handleStyleModeChange("color")}
-            disabled={sortingState !== "idle"}
+            disabled={sortingStatus !== "idle"}
           >
             Try color mode!
           </Button>
@@ -178,7 +178,7 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
         <Button
           className="bg-neutral-800 hover:bg-neutral-900"
           onClick={() => handleStyleModeChange("default")}
-          disabled={sortingState !== "idle"}
+          disabled={sortingStatus !== "idle"}
         >
           Default mode
         </Button>
@@ -187,4 +187,4 @@ const BubbleSortConfig: React.FC<BubbleSortConfigProps> = ({
   );
 };
 
-export default BubbleSortConfig;
+export default SortingConfig;
