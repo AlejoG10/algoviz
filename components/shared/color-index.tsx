@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
+import { ColorIndexRowSkeleton, HeadingSkeleton } from "./skeletons";
 import Button from "./form/button";
 
 interface ColorIndexRow {
@@ -21,77 +22,96 @@ const ColorIndexRow: React.FC<ColorIndexRow> = ({ label, className }) => (
 
 interface ColorIndexProps {
   algo: SortingAlgo;
+  isLoading: boolean;
 }
 
-const ColorIndex: React.FC<ColorIndexProps> = ({ algo }) => {
+const ColorIndex: React.FC<ColorIndexProps> = ({ algo, isLoading }) => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
-  const index: ColorIndexRow[] = useMemo(() => {
-    switch (algo) {
-      case "bubble-sort":
-        return [
-          {
-            label: "Current max",
-            className: "bg-orange-500 ring-orange-500",
-          },
-          {
-            label: "Possible new max",
-            className: "bg-rose-500 ring-rose-500",
-          },
-          {
-            label: "Sorted",
-            className: "bg-green-500 ring-green-500",
-          },
-        ];
+  const algoColorIndexMap: Record<SortingAlgo, ColorIndexRow[]> = {
+    "bubble-sort": [
+      {
+        label: "Current max",
+        className: "bg-orange-500 ring-orange-500",
+      },
+      {
+        label: "Possible new max",
+        className: "bg-rose-500 ring-rose-500",
+      },
+      {
+        label: "Sorted",
+        className: "bg-green-500 ring-green-500",
+      },
+    ],
+    "selection-sort": [
+      {
+        label: "Swapping item",
+        className: "bg-sky-500 ring-sky-500",
+      },
+      {
+        label: "Current min",
+        className: "bg-orange-500 ring-orange-500",
+      },
+      {
+        label: "Possible new min",
+        className: "bg-rose-500 ring-rose-500",
+      },
+      {
+        label: "Sorted",
+        className: "bg-green-500 ring-green-500",
+      },
+    ],
+    "insertion-sort": [
+      {
+        label: "Current max",
+        className: "bg-orange-500 ring-orange-500",
+      },
+      {
+        label: "Possible new max",
+        className: "bg-rose-500 ring-rose-500",
+      },
+      {
+        label: "Sorted",
+        className: "bg-green-500 ring-green-500",
+      },
+    ],
+  };
 
-      case "selection-sort":
-        return [
-          {
-            label: "Swapping item",
-            className: "bg-sky-500 ring-sky-500",
-          },
-          {
-            label: "Current min",
-            className: "bg-orange-500 ring-orange-500",
-          },
-          {
-            label: "Possible new min",
-            className: "bg-rose-500 ring-rose-500",
-          },
-          {
-            label: "Sorted",
-            className: "bg-green-500 ring-green-500",
-          },
-        ];
-
-      default:
-        throw new Error("invalid algorithm");
-    }
-  }, [algo]);
+  const index: ColorIndexRow[] = useMemo(() => algoColorIndexMap[algo], [algo]);
 
   return (
-    <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl p-4 w-full h-fit">
-      <div className="relative flex flex-col gap-y-4 w-full h-full">
+    <div className="bg-white border-neutral-50 border shadow-sm rounded-lg p-4 w-full h-fit">
+      <div className="relative flex flex-col gap-y-5 w-full h-full">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Color Index</h2>
-          <Button
-            circle
-            className="!p-0"
-            onClick={() => setExpanded((prev) => !prev)}
-          >
-            {expanded ? (
-              <ChevronUp className="text-neutral-800" />
-            ) : (
-              <ChevronDown className="text-neutral-800" />
-            )}
-          </Button>
+          {isLoading ? (
+            <HeadingSkeleton />
+          ) : (
+            <h2 className="text-xl font-semibold">Color Index</h2>
+          )}
+          {!isLoading && (
+            <Button
+              circle
+              className="!p-0"
+              onClick={() => setExpanded((prev) => !prev)}
+            >
+              {expanded ? (
+                <ChevronUp className="text-neutral-800" />
+              ) : (
+                <ChevronDown className="text-neutral-800" />
+              )}
+            </Button>
+          )}
         </div>
         {expanded && (
           <>
             <hr />
-            {index.map((colorIndex) => (
-              <ColorIndexRow key={colorIndex.label} {...colorIndex} />
-            ))}
+            {index.map((colorIndex) =>
+              isLoading ? (
+                <ColorIndexRowSkeleton />
+              ) : (
+                <ColorIndexRow key={colorIndex.label} {...colorIndex} />
+              )
+            )}
           </>
         )}
       </div>

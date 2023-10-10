@@ -9,7 +9,7 @@ interface BaseProps {
   comparisons: number[] | [number, number, number][];
   sortedIdxs: number[];
   showValues: boolean;
-  isArrayLoading: boolean;
+  isLoading: boolean;
 }
 
 interface DefaultModeVisualizerProps extends BaseProps {
@@ -38,7 +38,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   sortedIdxs,
   maxValue,
   showValues,
-  isArrayLoading,
+  isLoading,
 }) => {
   const HEIGHT = 400;
 
@@ -129,7 +129,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   };
 
   return (
-    <VisualizerContainer height={HEIGHT} loading={isArrayLoading}>
+    <VisualizerContainer height={HEIGHT} loading={isLoading}>
       {colorSystem
         ? array.map((value: ColorValue, i) => {
             const maxValue =

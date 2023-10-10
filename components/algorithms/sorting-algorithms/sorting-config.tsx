@@ -1,3 +1,7 @@
+import {
+  ButtonSkeleton,
+  InputGroupSkeleton,
+} from "@/components/shared/skeletons";
 import ConfigContainer from "@/components/shared/containers/config-container";
 import RangeGroup from "@/components/shared/form/range-group";
 import RadioGroup, { Radio } from "@/components/shared/form/radio-group";
@@ -14,6 +18,7 @@ interface SortingConfigProps {
   colorSystem: ColorSystem;
   styleMode: StyleMode;
   showValues: boolean;
+  isLoading: boolean;
   handleArraySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleMaxValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDelayChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -25,26 +30,20 @@ interface SortingConfigProps {
 
 const SortingConfig: React.FC<SortingConfigProps> = ({
   sortingStatus,
-
   arraySize,
-  handleArraySizeChange,
-
   maxValue,
-  handleMaxValueChange,
-
   delay,
-  handleDelayChange,
-
   sortingOrder,
-  handleSortingOrderChange,
-
   colorSystem,
-  handleColorSystemChange,
-
   showValues,
-  toggleShowValues,
-
   styleMode,
+  isLoading,
+  handleArraySizeChange,
+  handleMaxValueChange,
+  handleDelayChange,
+  handleSortingOrderChange,
+  handleColorSystemChange,
+  toggleShowValues,
   handleStyleModeChange,
 }) => {
   const MIN_ARRAY_SIZE = 3;
@@ -92,44 +91,67 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
   ];
 
   return (
-    <ConfigContainer>
-      <RangeGroup
-        label="Array size:"
-        name="arraySize"
-        min={MIN_ARRAY_SIZE}
-        max={MAX_ARRAY_SIZE}
-        value={arraySize}
-        onChange={handleArraySizeChange}
-        disabled={sortingStatus !== "idle"}
-      />
-      {styleMode === "default" && (
+    <ConfigContainer isLoading={isLoading}>
+      {/* ARRAY SIZE */}
+      {isLoading ? (
+        <InputGroupSkeleton />
+      ) : (
         <RangeGroup
-          label="Max value:"
-          name="maxValue"
-          min={MIN_MAX_VALUE}
-          max={MAX_MAX_VALUE}
-          value={maxValue}
-          onChange={handleMaxValueChange}
+          label="Array size:"
+          name="arraySize"
+          min={MIN_ARRAY_SIZE}
+          max={MAX_ARRAY_SIZE}
+          value={arraySize}
+          onChange={handleArraySizeChange}
           disabled={sortingStatus !== "idle"}
         />
       )}
-      <RangeGroup
-        label="Delay:"
-        name="maxVadelay"
-        min={MIN_DELAY}
-        max={MAX_DELAY}
-        step={DELAY_STEP}
-        value={delay}
-        onChange={handleDelayChange}
-        disabled={sortingStatus !== "idle"}
-      />
+
+      {/* MAX VALUE */}
+      {styleMode === "default" &&
+        (isLoading ? (
+          <InputGroupSkeleton />
+        ) : (
+          <RangeGroup
+            label="Max value:"
+            name="maxValue"
+            min={MIN_MAX_VALUE}
+            max={MAX_MAX_VALUE}
+            value={maxValue}
+            onChange={handleMaxValueChange}
+            disabled={sortingStatus !== "idle"}
+          />
+        ))}
+
+      {/* DELAY */}
+      {isLoading ? (
+        <InputGroupSkeleton />
+      ) : (
+        <RangeGroup
+          label="Delay:"
+          name="delay"
+          min={MIN_DELAY}
+          max={MAX_DELAY}
+          step={DELAY_STEP}
+          value={delay}
+          onChange={handleDelayChange}
+          disabled={sortingStatus !== "idle"}
+        />
+      )}
+
       <hr />
-      <RadioGroup
-        label="Starting order:"
-        name="sortingOrderRadio"
-        radioGroup={sortingOrderRadio}
-        disabled={sortingStatus !== "idle"}
-      />
+      {/* STARTING ORDER*/}
+      {isLoading ? (
+        <InputGroupSkeleton />
+      ) : (
+        <RadioGroup
+          label="Starting order:"
+          name="sortingOrderRadio"
+          radioGroup={sortingOrderRadio}
+          disabled={sortingStatus !== "idle"}
+        />
+      )}
+
       {styleMode === "color" && (
         <>
           <hr />
@@ -141,15 +163,24 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
           />
         </>
       )}
+
       <hr />
-      <CheckboxGroup
-        label="Show values:"
-        name="showValues"
-        checked={showValues}
-        onChange={toggleShowValues}
-        disabled={arraySize > 100}
-      />
+
+      {/* SHOW VALUES */}
+      {isLoading ? (
+        <InputGroupSkeleton />
+      ) : (
+        <CheckboxGroup
+          label="Show values:"
+          name="showValues"
+          checked={showValues}
+          onChange={toggleShowValues}
+          disabled={arraySize > 100}
+        />
+      )}
+
       <hr />
+
       {styleMode === "default" ? (
         <MyTooltip
           placement="bottom"
@@ -166,13 +197,17 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
           color="secondary"
           offset={15}
         >
-          <Button
-            className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 w-full"
-            onClick={() => handleStyleModeChange("color")}
-            disabled={sortingStatus !== "idle"}
-          >
-            Try color mode!
-          </Button>
+          {isLoading ? (
+            <ButtonSkeleton />
+          ) : (
+            <Button
+              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 w-full"
+              onClick={() => handleStyleModeChange("color")}
+              disabled={sortingStatus !== "idle"}
+            >
+              Try color mode!
+            </Button>
+          )}
         </MyTooltip>
       ) : (
         <Button

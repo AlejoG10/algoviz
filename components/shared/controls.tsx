@@ -10,6 +10,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 
+import { CircleButtonSkeleton } from "./skeletons";
 import MyTooltip from "./my-tooltip";
 import Button from "./form/button";
 
@@ -17,6 +18,7 @@ interface ControlsProps {
   sortingStatus: SortingStatus;
   stepIdx: number;
   stepsLength: number;
+  isLoading: boolean;
   handleSort: () => void;
   handleNextStep: () => void;
   handlePrevStep: () => void;
@@ -28,6 +30,7 @@ const Controls: React.FC<ControlsProps> = ({
   sortingStatus,
   stepIdx,
   stepsLength,
+  isLoading,
   handleSort,
   handleNextStep,
   handlePrevStep,
@@ -67,7 +70,7 @@ const Controls: React.FC<ControlsProps> = ({
         aria-label="progress"
         value={allSorted ? 100 : progress}
         color="success"
-        className="bg-white"
+        className={`bg-white ${isLoading && "animate-pulse"}`}
       />
 
       <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl px-4 lg:px-6 py-4 w-full">
@@ -79,14 +82,18 @@ const Controls: React.FC<ControlsProps> = ({
               color="success"
               offset={15}
             >
-              <Button
-                circle
-                bgColor="green"
-                onClick={handlePrevStep}
-                disabled={sortingStatus === "running" || stepIdx === 0}
-              >
-                <ChevronsLeft size={20} />
-              </Button>
+              {isLoading ? (
+                <CircleButtonSkeleton />
+              ) : (
+                <Button
+                  circle
+                  bgColor="green"
+                  onClick={handlePrevStep}
+                  disabled={sortingStatus === "running" || stepIdx === 0}
+                >
+                  <ChevronsLeft size={20} />
+                </Button>
+              )}
             </MyTooltip>
             {sortingStatus === "running" ? (
               <MyTooltip
@@ -95,14 +102,18 @@ const Controls: React.FC<ControlsProps> = ({
                 color="danger"
                 offset={15}
               >
-                <Button
-                  circle
-                  bgColor="red"
-                  onClick={handlePause}
-                  disabled={allSorted}
-                >
-                  <Pause size={20} />
-                </Button>
+                {isLoading ? (
+                  <CircleButtonSkeleton />
+                ) : (
+                  <Button
+                    circle
+                    bgColor="red"
+                    onClick={handlePause}
+                    disabled={allSorted}
+                  >
+                    <Pause size={20} />
+                  </Button>
+                )}
               </MyTooltip>
             ) : (
               <MyTooltip
@@ -111,14 +122,18 @@ const Controls: React.FC<ControlsProps> = ({
                 color="success"
                 offset={15}
               >
-                <Button
-                  circle
-                  bgColor="green"
-                  onClick={handleSort}
-                  disabled={allSorted}
-                >
-                  <Play size={20} className="pl-px" />
-                </Button>
+                {isLoading ? (
+                  <CircleButtonSkeleton />
+                ) : (
+                  <Button
+                    circle
+                    bgColor="green"
+                    onClick={handleSort}
+                    disabled={allSorted}
+                  >
+                    <Play size={20} className="pl-px" />
+                  </Button>
+                )}
               </MyTooltip>
             )}
             <MyTooltip
@@ -127,14 +142,18 @@ const Controls: React.FC<ControlsProps> = ({
               color="success"
               offset={15}
             >
-              <Button
-                circle
-                bgColor="green"
-                onClick={handleNextStep}
-                disabled={sortingStatus === "running" || allSorted}
-              >
-                <ChevronsRight size={20} />
-              </Button>
+              {isLoading ? (
+                <CircleButtonSkeleton />
+              ) : (
+                <Button
+                  circle
+                  bgColor="green"
+                  onClick={handleNextStep}
+                  disabled={sortingStatus === "running" || allSorted}
+                >
+                  <ChevronsRight size={20} />
+                </Button>
+              )}
             </MyTooltip>
           </div>
           <div className="absolute right-0">
@@ -144,9 +163,13 @@ const Controls: React.FC<ControlsProps> = ({
               color="danger"
               offset={15}
             >
-              <Button circle bgColor="red" onClick={handleReset}>
-                <RotateCcw size={20} />
-              </Button>
+              {isLoading ? (
+                <CircleButtonSkeleton />
+              ) : (
+                <Button circle bgColor="red" onClick={handleReset}>
+                  <RotateCcw size={20} />
+                </Button>
+              )}
             </MyTooltip>
           </div>
         </div>

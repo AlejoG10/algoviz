@@ -1,4 +1,4 @@
-import Loader from "../loader";
+import { LeapFrog } from "@uiball/loaders";
 
 interface VisualizerContainerProps {
   height: number;
@@ -21,7 +21,11 @@ const VisualizerContainer: React.FC<VisualizerContainerProps> = ({
           loading ? "items-center" : "items-end"
         }`}
       >
-        {loading ? <Loader /> : children}
+        {loading ? (
+          <LeapFrog size={100} speed={3} color="rgb(38 38 38)" />
+        ) : (
+          children
+        )}
       </div>
     </div>
   );

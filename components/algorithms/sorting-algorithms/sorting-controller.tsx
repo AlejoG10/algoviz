@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useReducer } from "react";
-import { useSearchParams } from "next/navigation";
 
-import { SortingState, SortingAction, SortingData } from "@/types/sorting";
+import { SortingData } from "@/types/sorting";
+import sortingReducer, { getInitialState } from "@/reducers/sortingReducer";
 import { genArray, genColorArray } from "@/lib/utils";
-import { BubbleSort, SelectionSort } from "@/lib/algorithms";
+import { BubbleSort, InsertionSort, SelectionSort } from "@/lib/algorithms";
 import ControllerContainer from "@/components/shared/containers/controller-container";
 import SidebarContainer from "@/components/shared/containers/sidebar-container";
 import PlaygroundContainer from "@/components/shared/containers/playground-container";
@@ -15,109 +15,16 @@ import Controls from "@/components/shared/controls";
 import SortingConfig from "./sorting-config";
 import SortingVisualizer from "./sorting-visualizer";
 
-const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
-  // re-usable constants
-  const arraySize = 25;
-  const maxValue = 400;
-  const colorSystem: ColorSystem = "HEX";
-  const array: number[] = genArray(arraySize, maxValue);
-  const colorArray: ColorValue[] = genColorArray(arraySize, colorSystem);
-  const comparisons: number[] | [number, number, number][] =
-    sortingAlgo === "bubble-sort" ? [0] : [[0, 0, 1]];
+interface SortingControllerProps {
+  sortingAlgo: SortingAlgo;
+}
 
-  return {
-    sortingAlgo,
-    array,
-    colorArray,
-    stepIdx: 0,
-    sortingSteps: [[...array]],
-    colorSortingSteps: [[...colorArray]],
-    comparisons,
-    numSwaps: [0],
-    sortedIdxs: [],
-    arraySize,
-    maxValue,
-    delay: 0,
-    sortingOrder: "shuffled",
-    colorSystem,
-    showValues: false,
-    styleMode: "default",
-    sortingStatus: "idle",
-    sortingTimeout: undefined,
-    isArrayLoading: true,
-  };
-};
-
-const reducer = (state: SortingState, action: SortingAction) => {
-  switch (action.type) {
-    case "SET_ARRAY":
-      return { ...state, array: action.payload };
-
-    case "SET_COLOR_ARRAY":
-      return { ...state, colorArray: action.payload };
-
-    case "NEXT_STEP_IDX":
-      return { ...state, stepIdx: state.stepIdx + 1 };
-
-    case "PREVIOUS_STEP_IDX":
-      return { ...state, stepIdx: state.stepIdx - 1 };
-
-    case "SET_ARRAY_SIZE":
-      return { ...state, arraySize: action.payload };
-
-    case "SET_MAX_VALUE":
-      return { ...state, maxValue: action.payload };
-
-    case "SET_DELAY":
-      return { ...state, delay: action.payload };
-
-    case "SET_SORTING_ORDER":
-      return { ...state, sortingOrder: action.payload };
-
-    case "SET_COLOR_SYSTEM":
-      return { ...state, colorSystem: action.payload };
-
-    case "TOGGLE_SHOW_VALUES":
-      return { ...state, showValues: !state.showValues };
-
-    case "SET_STYLE_MODE":
-      return { ...state, styleMode: action.payload };
-
-    case "SET_SORTING_STATE":
-      return { ...state, sortingStatus: action.payload };
-
-    case "SET_SORTING_TIMEOUT":
-      return { ...state, sortingTimeout: action.payload };
-
-    case "SET_IS_ARRAY_LOADING":
-      return { ...state, isArrayLoading: action.payload };
-
-    case "SET_SORT_DATA":
-      return {
-        ...state,
-        isArrayLoading: false,
-        stepIdx: 0,
-        sortingSteps: action.payload.sortingSteps,
-        colorSortingSteps: action.payload.colorSortingSteps,
-        comparisons: action.payload.comparisons,
-        numSwaps: action.payload.numSwaps,
-        sortedIdxs: action.payload.sortedIdxs,
-      };
-
-    case "RESET_STATE":
-      return getInitialState(action.payload);
-
-    default:
-      throw new Error();
-  }
-};
-
-const SortingController = () => {
-  const searchParams = useSearchParams();
-
+const SortingController: React.FC<SortingControllerProps> = ({
+  sortingAlgo,
+}) => {
   const [state, dispatch] = useReducer(
-    reducer,
-    getInitialState(searchParams.get("algo") as SortingAlgo)
+    sortingReducer,
+    getInitialState(sortingAlgo)
   );
 
   // ---------
@@ -163,6 +70,13 @@ const SortingController = () => {
       : selectionSort.sort([...state.colorArray], true);
   };
 
+  const executeInsertionSort = (): SortingData => {
+    const insertionSort = new InsertionSort();
+    return state.styleMode === "default"
+      ? insertionSort.sort([...state.array])
+      : insertionSort.sort([...state.colorArray], true);
+  };
+
   const executeAlgorithm = (): SortingData => {
     let data: SortingData;
 
@@ -175,8 +89,8 @@ const SortingController = () => {
         data = executeSelectionSort();
         break;
 
-      default:
-        data = executeBubbleSort();
+      case "insertion-sort":
+        data = executeInsertionSort();
     }
 
     return data;
@@ -270,14 +184,6 @@ const SortingController = () => {
   useEffect(() => {
     dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
   }, []);
-
-  useEffect(() => {
-    dispatch({
-      type: "RESET_STATE",
-      payload: (searchParams.get("algo") as SortingAlgo) || "bubble-sort",
-    });
-    dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
-  }, [searchParams]);
 
   // sets array (or colorArray) when sortingOrder changes
   useEffect(() => {
@@ -421,7 +327,7 @@ const SortingController = () => {
   return (
     <ControllerContainer>
       <SidebarContainer>
-        <ColorIndex algo={state.sortingAlgo} />
+        <ColorIndex algo={state.sortingAlgo} isLoading={state.isArrayLoading} />
         <SortingConfig
           sortingStatus={state.sortingStatus}
           arraySize={state.arraySize}
@@ -431,6 +337,7 @@ const SortingController = () => {
           colorSystem={state.colorSystem}
           styleMode={state.styleMode}
           showValues={state.showValues}
+          isLoading={state.isArrayLoading}
           handleArraySizeChange={handleArraySizeChange}
           handleMaxValueChange={handleMaxValueChange}
           handleDelayChange={handleDelayChange}
@@ -451,7 +358,7 @@ const SortingController = () => {
             sortedIdxs={state.sortedIdxs}
             maxValue={state.maxValue}
             showValues={state.showValues}
-            isArrayLoading={state.isArrayLoading}
+            isLoading={state.isArrayLoading}
           />
         ) : (
           <SortingVisualizer
@@ -463,13 +370,14 @@ const SortingController = () => {
             comparisons={state.comparisons}
             sortedIdxs={state.sortedIdxs}
             showValues={state.showValues}
-            isArrayLoading={state.isArrayLoading}
+            isLoading={state.isArrayLoading}
           />
         )}
 
         <Console
           comparisons={state.stepIdx}
           swaps={state.numSwaps[state.stepIdx]}
+          isLoading={state.isArrayLoading}
         />
 
         <Controls
@@ -480,6 +388,7 @@ const SortingController = () => {
               ? state.sortingSteps.length
               : state.colorSortingSteps.length
           }
+          isLoading={state.isArrayLoading}
           handleSort={handleSort}
           handleNextStep={handleNextStep}
           handlePrevStep={handlePrevStep}
