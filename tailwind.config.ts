@@ -16,7 +16,8 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       spacing: {
-        'filters': '7rem',
+        'navbar': '5rem',
+        'filters': '5rem',
       },
       screens: {
         "visualizer-bp": "900px",
