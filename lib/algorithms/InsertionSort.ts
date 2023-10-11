@@ -1,4 +1,3 @@
-import { SortingData } from "@/types/sorting";
 import { swap } from "./utils";
 import Algorithm from "./Algorithm";
 
