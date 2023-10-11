@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useReducer } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 
-import { SortingData } from "@/types/sorting";
-import sortingReducer, { getInitialState } from "@/reducers/sortingReducer";
+import reducer, { getInitialState } from "@/reducers/sortingReducer";
 import { genArray, genColorArray } from "@/lib/utils";
+import Algorithm from "@/lib/algorithms/Algorithm";
 import { BubbleSort, InsertionSort, SelectionSort } from "@/lib/algorithms";
 import ControllerContainer from "@/components/shared/containers/controller-container";
 import SidebarContainer from "@/components/shared/containers/sidebar-container";
@@ -22,9 +22,18 @@ interface SortingControllerProps {
 const SortingController: React.FC<SortingControllerProps> = ({
   sortingAlgo,
 }) => {
-  const [state, dispatch] = useReducer(
-    sortingReducer,
-    getInitialState(sortingAlgo)
+  const [isLoading, setIsLoading] = useState(true);
+  const [state, dispatch] = useReducer(reducer, getInitialState(sortingAlgo));
+
+  const algoIdMap: Record<any, Algorithm> = {
+    "bubble-sort": new BubbleSort(),
+    "selection-sort": new SelectionSort(),
+    "insertion-sort": new InsertionSort(),
+  };
+
+  const algorithm: Algorithm = useMemo(
+    () => algoIdMap[state.sortingAlgo],
+    [state.sortingAlgo]
   );
 
   // ---------
@@ -35,19 +44,6 @@ const SortingController: React.FC<SortingControllerProps> = ({
   // HELPERS
   // -------
 
-  const handleConfigChange = () => {
-    dispatch({
-      type: "SET_SORT_DATA",
-      payload: {
-        sortingSteps: [[...state.array]],
-        colorSortingSteps: [[...state.colorArray]],
-        comparisons: [0],
-        numSwaps: [0],
-        sortedIdxs: [],
-      },
-    });
-  };
-
   const increaseSteps = () => {
     const intervalId = setInterval(() => {
       dispatch({ type: "NEXT_STEP_IDX" });
@@ -56,44 +52,18 @@ const SortingController: React.FC<SortingControllerProps> = ({
     dispatch({ type: "SET_SORTING_TIMEOUT", payload: intervalId });
   };
 
-  const executeBubbleSort = (): SortingData => {
-    const bubbleSort = new BubbleSort();
-    return state.styleMode === "default"
-      ? bubbleSort.sort([...state.array])
-      : bubbleSort.sort([...state.colorArray], true);
-  };
-
-  const executeSelectionSort = (): SortingData => {
-    const selectionSort = new SelectionSort();
-    return state.styleMode === "default"
-      ? selectionSort.sort([...state.array])
-      : selectionSort.sort([...state.colorArray], true);
-  };
-
-  const executeInsertionSort = (): SortingData => {
-    const insertionSort = new InsertionSort();
-    return state.styleMode === "default"
-      ? insertionSort.sort([...state.array])
-      : insertionSort.sort([...state.colorArray], true);
-  };
-
-  const executeAlgorithm = (): SortingData => {
-    let data: SortingData;
-
-    switch (state.sortingAlgo) {
-      case "bubble-sort":
-        data = executeBubbleSort();
-        break;
-
-      case "selection-sort":
-        data = executeSelectionSort();
-        break;
-
-      case "insertion-sort":
-        data = executeInsertionSort();
+  const executeAlgorithm = () => {
+    if (state.styleMode === "default") {
+      const copyArray = [...state.array];
+      algorithm.sort(copyArray);
+      dispatch({ type: "SET_ARRAY", payload: copyArray });
+    } else {
+      const copyArray = [...state.colorArray];
+      algorithm.sortColors(copyArray);
+      dispatch({ type: "SET_COLOR_ARRAY", payload: copyArray });
     }
 
-    return data;
+    increaseSteps();
   };
 
   // --------
@@ -131,11 +101,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
   const handleSort = () => {
     // first case: sort from beginning
     if (state.sortingStatus === "idle") {
-      const sortingData = executeAlgorithm();
-      dispatch({
-        type: "SET_SORT_DATA",
-        payload: { ...sortingData },
-      });
+      executeAlgorithm();
     }
 
     // second case: sort from debug
@@ -153,42 +119,62 @@ const SortingController: React.FC<SortingControllerProps> = ({
   const handleNextStep = () => {
     // case: nextStep from beginning
     if (state.sortingStatus === "idle") {
-      const sortingData = executeAlgorithm();
-      dispatch({
-        type: "SET_SORT_DATA",
-        payload: { ...sortingData },
-      });
+      executeAlgorithm();
     }
 
     state.sortingStatus !== "debug" &&
       dispatch({ type: "SET_SORTING_STATE", payload: "debug" });
+
     dispatch({ type: "NEXT_STEP_IDX" });
   };
 
   const handlePrevStep = () => {
     state.sortingStatus !== "debug" &&
       dispatch({ type: "SET_SORTING_STATE", payload: "debug" });
+
     dispatch({ type: "PREVIOUS_STEP_IDX" });
   };
 
+  const handleNewArray = () => {
+    if (state.styleMode === "default") {
+      dispatch({
+        type: "SET_ARRAY",
+        payload: genArray(state.arraySize, state.maxValue, state.sortingOrder),
+      });
+    } else {
+      dispatch({
+        type: "SET_COLOR_ARRAY",
+        payload: genColorArray(
+          state.arraySize,
+          state.colorSystem,
+          state.sortingOrder
+        ),
+      });
+    }
+  };
+
   const handleReset = () => {
-    dispatch({ type: "RESET_STATE", payload: state.sortingAlgo });
-    dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
+    setIsLoading(true);
+
+    algorithm.resetAttributes();
+    clearInterval(state.sortingTimeout);
+    dispatch({ type: "RESET_STATE" });
+
+    setIsLoading(false);
   };
 
   // -----------
   // USE EFFECTS
   // -----------
 
-  // sets isArrayLoading to false when component mounted
+  // sets isLoading to false when component mounts
   useEffect(() => {
-    dispatch({ type: "SET_IS_ARRAY_LOADING", payload: false });
+    setIsLoading(false);
   }, []);
 
   // sets array (or colorArray) when sortingOrder changes
   useEffect(() => {
-    state.stepIdx > 0 && handleConfigChange();
-
+    algorithm.resetAttributes();
     if (state.styleMode === "default") {
       let newArray: number[] = [...state.array];
       switch (state.sortingOrder) {
@@ -222,8 +208,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // hides values (if necessary) when array size > 100
   useEffect(() => {
-    state.stepIdx > 0 && handleConfigChange();
-
+    algorithm.resetAttributes();
     if (state.arraySize > 100 && state.showValues) {
       dispatch({ type: "TOGGLE_SHOW_VALUES" });
     }
@@ -231,8 +216,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets array when arraySize or maxValue change
   useEffect(() => {
-    state.stepIdx > 0 && handleConfigChange();
-
+    algorithm.resetAttributes();
     if (state.styleMode === "default") {
       dispatch({
         type: "SET_ARRAY",
@@ -243,8 +227,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets colorArray when arraySize or colorSystem change
   useEffect(() => {
-    state.stepIdx > 0 && handleConfigChange();
-
+    algorithm.resetAttributes();
     if (state.styleMode === "color") {
       dispatch({
         type: "SET_COLOR_ARRAY",
@@ -259,14 +242,14 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets maxValue to 400 or 0 when styleMode changes to default or color respectively
   useEffect(() => {
-    state.stepIdx > 0 && handleConfigChange();
-
+    algorithm.resetAttributes();
     const payload = state.styleMode === "default" ? 400 : 0;
     dispatch({ type: "SET_MAX_VALUE", payload });
   }, [state.styleMode]);
 
   // generates a new array (or colorArray), based on the current configs, when styleMode changes
   useEffect(() => {
+    algorithm.resetAttributes();
     if (state.styleMode === "default") {
       const array: number[] = genArray(
         state.arraySize,
@@ -293,30 +276,20 @@ const SortingController: React.FC<SortingControllerProps> = ({
     }
   }, [state.sortingStatus]);
 
-  // calls increaseSteps()
-  useEffect(() => {
-    if (state.sortingStatus === "running") {
-      increaseSteps();
-    }
-  }, [state.sortingSteps, state.colorSortingSteps]);
-
   // updates array (or colorArray) when stepIdx is updated
   useEffect(() => {
-    const stepsLength =
-      state.styleMode === "default"
-        ? state.sortingSteps.length
-        : state.colorSortingSteps.length;
+    const stepsLength = algorithm.getStepsLength(state.styleMode === "color");
 
     if (state.stepIdx < stepsLength) {
       if (state.styleMode === "default") {
         dispatch({
           type: "SET_ARRAY",
-          payload: state.sortingSteps[state.stepIdx],
+          payload: algorithm.getStepAtIdx(state.stepIdx),
         });
       } else {
         dispatch({
           type: "SET_COLOR_ARRAY",
-          payload: state.colorSortingSteps[state.stepIdx],
+          payload: algorithm.getColorStepAtIdx(state.stepIdx),
         });
       }
     } else {
@@ -327,7 +300,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
   return (
     <ControllerContainer>
       <SidebarContainer>
-        <ColorIndex algo={state.sortingAlgo} isLoading={state.isArrayLoading} />
+        <ColorIndex algo={state.sortingAlgo} isLoading={isLoading} />
         <SortingConfig
           sortingStatus={state.sortingStatus}
           arraySize={state.arraySize}
@@ -337,7 +310,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
           colorSystem={state.colorSystem}
           styleMode={state.styleMode}
           showValues={state.showValues}
-          isLoading={state.isArrayLoading}
+          isLoading={isLoading}
           handleArraySizeChange={handleArraySizeChange}
           handleMaxValueChange={handleMaxValueChange}
           handleDelayChange={handleDelayChange}
@@ -351,48 +324,41 @@ const SortingController: React.FC<SortingControllerProps> = ({
         {state.styleMode === "default" ? (
           <SortingVisualizer
             sortingAlgo={state.sortingAlgo}
+            algorithm={algorithm}
             array={state.array}
             stepIdx={state.stepIdx}
-            stepsLength={state.sortingSteps.length}
-            comparisons={state.comparisons}
-            sortedIdxs={state.sortedIdxs}
             maxValue={state.maxValue}
             showValues={state.showValues}
-            isLoading={state.isArrayLoading}
+            isLoading={isLoading}
           />
         ) : (
           <SortingVisualizer
             sortingAlgo={state.sortingAlgo}
+            algorithm={algorithm}
             array={state.colorArray}
             colorSystem={state.colorSystem}
             stepIdx={state.stepIdx}
-            stepsLength={state.sortingSteps.length}
-            comparisons={state.comparisons}
-            sortedIdxs={state.sortedIdxs}
             showValues={state.showValues}
-            isLoading={state.isArrayLoading}
+            isLoading={isLoading}
           />
         )}
 
         <Console
-          comparisons={state.stepIdx}
-          swaps={state.numSwaps[state.stepIdx]}
-          isLoading={state.isArrayLoading}
+          steps={state.stepIdx}
+          swaps={algorithm.getNumSwapsAtIdx(state.stepIdx)}
+          isLoading={isLoading}
         />
 
         <Controls
           sortingStatus={state.sortingStatus}
           stepIdx={state.stepIdx}
-          stepsLength={
-            state.styleMode === "default"
-              ? state.sortingSteps.length
-              : state.colorSortingSteps.length
-          }
-          isLoading={state.isArrayLoading}
+          stepsLength={algorithm.getStepsLength(state.styleMode === "color")}
+          isLoading={isLoading}
           handleSort={handleSort}
           handleNextStep={handleNextStep}
           handlePrevStep={handlePrevStep}
           handlePause={handlePause}
+          handleNewArray={handleNewArray}
           handleReset={handleReset}
         />
       </PlaygroundContainer>

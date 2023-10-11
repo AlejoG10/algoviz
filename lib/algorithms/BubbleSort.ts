@@ -1,58 +1,91 @@
-import { SortingData } from "@/types/sorting";
 import { swap } from "./utils";
 import Algorithm from "./Algorithm";
 
-class BubbleSort implements Algorithm {
-    sort(array: number[] | ColorValue[], colorMode?: boolean): SortingData {
-        let sortingSteps: number[][] = [];
-        let colorSortingSteps: ColorValue[][] = [];
-        let comparisons: number[] = [];
-        let numSwapsCounter: number = 0;
-        let numSwaps: number[] = [numSwapsCounter];
-        let sortedIdxs: number[] = [];
+class BubbleSort extends Algorithm {
+    constructor() {
+        super([0])
+    }
 
-        for (let i = 0; i < array.length; i++) {
-            for (let j = 1; j < array.length - i; j++) {
-                if (colorMode) {
-                    colorSortingSteps.push([...array as ColorValue[]]);
-                    const colorArray = array as ColorValue[];
-                    if (colorArray[j - 1][1] > colorArray[j][1]) {
-                        swap(array as ColorValue[], j - 1, j);
-                        numSwapsCounter++;
-                    }
-                } else {
-                    sortingSteps.push([...array as number[]]);
-                    if (array[j - 1] > array[j]) {
-                        swap(array as number[], j - 1, j);
-                        numSwapsCounter++;
-                    }
+    resetAttributes() {
+        this.sortingSteps = [];
+        this.colorSortingSteps = [];
+        this.comparisons = [0];
+        this.numSwaps = [];
+        this.sortedIdxs = [];
+    }
+
+    sort(array: number[]) {
+        this.comparisons = [];
+        const N = array.length;
+        let swapped = false;
+        let numSwapsCounter = 0;
+        this.numSwaps.push(numSwapsCounter);
+
+        let i, j;
+        for (i = 0; i < N - 1; i++) {
+            for (j = 0; j < N - i - 1; j++) {
+                !swapped && this.sortingSteps.push([...array]);
+
+                swapped = false;
+                if (array[j] > array[j + 1]) {
+                    swap(array, j, j + 1);
+                    swapped = true;
+                    this.sortingSteps.push([...array]);
+                    numSwapsCounter++;
                 }
-                comparisons.push(j - 1);
-                numSwaps.push(numSwapsCounter);
-                sortedIdxs.push(i);
+
+                if (j !== N - i - 2) this.sortedIdxs.push(-1);
+                this.comparisons.push(j);
+                this.numSwaps.push(numSwapsCounter);
             }
+            this.sortedIdxs.push(j);
         }
-        return {
-            sortingSteps,
-            colorSortingSteps,
-            comparisons,
-            numSwaps,
-            sortedIdxs
-        };
+    }
+
+    sortColors(array: ColorValue[]) {
+        this.comparisons = [];
+        const N = array.length;
+        let swapped = false;
+        let numSwapsCounter = 0;
+        this.numSwaps.push(numSwapsCounter);
+
+        let i, j;
+        for (i = 0; i < N - 1; i++) {
+            for (j = 0; j < N - i - 1; j++) {
+                !swapped && this.colorSortingSteps.push([...array]);
+
+                swapped = false;
+                if (array[j][1] > array[j + 1][1]) {
+                    swap(array, j, j + 1);
+                    swapped = true;
+                    numSwapsCounter++;
+                    this.colorSortingSteps.push([...array]);
+                }
+
+                if (j !== N - i - 2) this.sortedIdxs.push(-1);
+                this.comparisons.push(j);
+                this.numSwaps.push(numSwapsCounter);
+            }
+            this.sortedIdxs.push(j);
+        }
     }
 
     isSky(): boolean { return false; }
 
-    isOrange(idx: number, stepIdx: number, comparisons: number[]): boolean {
-        return comparisons[stepIdx] === idx;
+    isOrange(idx: number, stepIdx: number): boolean {
+        return this.comparisons[stepIdx] === idx;
     }
 
-    isRose(idx: number, stepIdx: number, comparisons: number[]): boolean {
-        return comparisons[stepIdx] === idx - 1;
+    isRose(idx: number, stepIdx: number): boolean {
+        return this.comparisons[stepIdx] === idx - 1;
     }
 
-    isSorted(idx: number, array: number[] | ColorValue[], stepIdx: number, stepsLength: number, sortedIdxs: number[]): boolean {
-        return idx >= array.length - sortedIdxs[stepIdx] || (stepIdx !== 0 && stepIdx >= stepsLength);
+    isSorted(idx: number, stepIdx: number): boolean {
+        return this.sortedIdxs.slice(0, stepIdx).includes(idx) || this.allSorted(stepIdx);
+    }
+
+    allSorted(stepIdx: number): boolean {
+        return stepIdx !== 0 && stepIdx >= this.sortedIdxs.length
     }
 }
 

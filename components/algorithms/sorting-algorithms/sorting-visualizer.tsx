@@ -2,17 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { SortingData } from "@/types/sorting";
-import { BubbleSort, InsertionSort, SelectionSort } from "@/lib/algorithms";
+import Algorithm from "@/lib/algorithms/Algorithm";
 import VisualizerContainer from "@/components/shared/containers/visualizer-container";
 import Bar from "@/components/shared/bar";
 
 interface BaseProps {
   sortingAlgo: SortingAlgo;
+  algorithm: Algorithm;
   stepIdx: number;
-  stepsLength: number;
-  comparisons: SortingData["comparisons"];
-  sortedIdxs: number[];
   showValues: boolean;
   isLoading: boolean;
 }
@@ -35,12 +32,10 @@ type SortingVisualizerProps =
 
 const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   sortingAlgo,
+  algorithm,
   array,
   colorSystem,
   stepIdx,
-  stepsLength,
-  comparisons,
-  sortedIdxs,
   maxValue,
   showValues,
   isLoading,
@@ -58,12 +53,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   const isSky = (idx: number) => {
     switch (sortingAlgo) {
       case "selection-sort":
-        const selectionSort = new SelectionSort();
-        return selectionSort.isSky(
-          idx,
-          stepIdx,
-          comparisons as [number, number, number][]
-        );
+        return algorithm.isSky(idx, stepIdx);
 
       default:
         return false;
@@ -71,74 +61,15 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   };
 
   const isOrange = (idx: number) => {
-    switch (sortingAlgo) {
-      case "bubble-sort":
-        const bubbleSort = new BubbleSort();
-        return bubbleSort.isOrange(idx, stepIdx, comparisons as number[]);
-
-      case "selection-sort":
-        const selectionSort = new SelectionSort();
-        return selectionSort.isOrange(
-          idx,
-          stepIdx,
-          comparisons as [number, number, number][]
-        );
-
-      case "insertion-sort":
-        const insertionSort = new InsertionSort();
-        return insertionSort.isOrange(idx, stepIdx, comparisons as number[]);
-
-      default:
-        return false;
-    }
+    return algorithm.isOrange(idx, stepIdx);
   };
 
   const isRose = (idx: number) => {
-    switch (sortingAlgo) {
-      case "bubble-sort":
-        const bubbleSort = new BubbleSort();
-        return bubbleSort.isRose(idx, stepIdx, comparisons as number[]);
-
-      case "selection-sort":
-        const selectionSort = new SelectionSort();
-        return selectionSort.isRose(
-          idx,
-          stepIdx,
-          comparisons as [number, number, number][]
-        );
-
-      default:
-        return false;
-    }
+    return algorithm.isRose(idx, stepIdx);
   };
 
   const isSorted = (idx: number) => {
-    switch (sortingAlgo) {
-      case "bubble-sort":
-        const bubbleSort = new BubbleSort();
-        return bubbleSort.isSorted(
-          idx,
-          array,
-          stepIdx,
-          stepsLength,
-          sortedIdxs
-        );
-
-      case "selection-sort":
-        const selectionSort = new SelectionSort();
-        return selectionSort.isSorted(
-          idx,
-          stepIdx,
-          comparisons as [number, number, number][]
-        );
-
-      case "insertion-sort":
-        const insertionSort = new InsertionSort();
-        return insertionSort.isSorted(idx, stepIdx, sortedIdxs);
-
-      default:
-        return false;
-    }
+    return algorithm.isSorted(idx, stepIdx);
   };
 
   // --------
@@ -183,7 +114,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value[1]}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSky={!isSorted(i) && !isOrange(i) && isSky(i)}
+                isSky={isSky(i)}
                 isOrange={isOrange(i)}
                 isRose={isRose(i)}
                 isSorted={isSorted(i)}
@@ -198,7 +129,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSky={!isSorted(i) && !isOrange(i) && isSky(i)}
+                isSky={isSky(i)}
                 isOrange={isOrange(i)}
                 isRose={isRose(i)}
                 isSorted={isSorted(i)}

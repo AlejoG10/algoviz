@@ -7,6 +7,7 @@ import {
   ChevronsRight,
   Pause,
   Play,
+  RefreshCcw,
   RotateCcw,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ interface ControlsProps {
   handleNextStep: () => void;
   handlePrevStep: () => void;
   handlePause: () => void;
+  handleNewArray: () => void;
   handleReset: () => void;
 }
 
@@ -35,6 +37,7 @@ const Controls: React.FC<ControlsProps> = ({
   handleNextStep,
   handlePrevStep,
   handlePause,
+  handleNewArray,
   handleReset,
 }) => {
   const progress = useMemo(
@@ -75,6 +78,27 @@ const Controls: React.FC<ControlsProps> = ({
 
       <div className="bg-neutral-50 border-neutral-100 border shadow-md rounded-xl px-4 lg:px-6 py-4 w-full">
         <div className="relative flex justify-center items-center w-full">
+          <div className="absolute left-0">
+            <MyTooltip
+              placement="bottom"
+              content="generate new array"
+              color="warning"
+              offset={15}
+            >
+              {isLoading ? (
+                <CircleButtonSkeleton />
+              ) : (
+                <Button
+                  circle
+                  bgColor="orange"
+                  onClick={handleNewArray}
+                  disabled={sortingStatus === "running"}
+                >
+                  <RefreshCcw size={20} />
+                </Button>
+              )}
+            </MyTooltip>
+          </div>
           <div className="flex justify-center items-center gap-x-4 w-full">
             <MyTooltip
               placement="bottom"

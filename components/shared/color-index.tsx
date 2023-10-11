@@ -67,11 +67,7 @@ const ColorIndex: React.FC<ColorIndexProps> = ({ algo, isLoading }) => {
         className: "bg-orange-500 ring-orange-500",
       },
       {
-        label: "Comparison item",
-        className: "bg-rose-500 ring-rose-500",
-      },
-      {
-        label: "Partially sorted",
+        label: "Sorted partition",
         className: "bg-green-500 ring-green-500",
       },
     ],

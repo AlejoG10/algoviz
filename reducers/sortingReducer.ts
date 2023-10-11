@@ -1,5 +1,36 @@
-import { SortingState, SortingAction, SortingData } from "@/types/sorting";
 import { genArray, genColorArray } from "@/lib/utils";
+
+export type SortingState = {
+    sortingAlgo: SortingAlgo;
+    array: number[];
+    colorArray: ColorValue[];
+    stepIdx: number;
+    arraySize: number;
+    maxValue: number;
+    delay: number;
+    sortingOrder: SortingOrder;
+    colorSystem: ColorSystem;
+    showValues: boolean;
+    styleMode: StyleMode;
+    sortingStatus: SortingStatus;
+    sortingTimeout: NodeJS.Timeout | undefined;
+}
+
+export type SortingAction =
+    | { type: "SET_ARRAY"; payload: number[] }
+    | { type: "SET_COLOR_ARRAY"; payload: ColorValue[] }
+    | { type: "SET_ARRAY_SIZE"; payload: number }
+    | { type: "NEXT_STEP_IDX" }
+    | { type: "PREVIOUS_STEP_IDX" }
+    | { type: "SET_MAX_VALUE"; payload: number }
+    | { type: "SET_DELAY"; payload: number }
+    | { type: "SET_SORTING_ORDER"; payload: SortingOrder }
+    | { type: "SET_COLOR_SYSTEM"; payload: ColorSystem }
+    | { type: "TOGGLE_SHOW_VALUES" }
+    | { type: "SET_STYLE_MODE"; payload: StyleMode }
+    | { type: "SET_SORTING_STATE"; payload: SortingStatus }
+    | { type: "SET_SORTING_TIMEOUT"; payload: NodeJS.Timeout | undefined }
+    | { type: "RESET_STATE" };
 
 export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
     // re-usable constants
@@ -8,29 +39,12 @@ export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
     const colorSystem: ColorSystem = "HEX";
     const array: number[] = genArray(arraySize, maxValue);
     const colorArray: ColorValue[] = genColorArray(arraySize, colorSystem);
-    let comparisons: SortingData["comparisons"];
-    switch (sortingAlgo) {
-        case "bubble-sort":
-            comparisons = [0]
-            break;
-        case "selection-sort":
-            comparisons = [[0, 0, 1]]
-            break;
-        case "insertion-sort":
-            comparisons = [1]
-            break;
-    }
 
     return {
         sortingAlgo,
         array,
         colorArray,
         stepIdx: 0,
-        sortingSteps: [[...array]],
-        colorSortingSteps: [[...colorArray]],
-        comparisons,
-        numSwaps: [0],
-        sortedIdxs: [],
         arraySize,
         maxValue,
         delay: 0,
@@ -40,11 +54,10 @@ export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
         styleMode: "default",
         sortingStatus: "idle",
         sortingTimeout: undefined,
-        isArrayLoading: true,
     };
 };
 
-const sortingReducer = (state: SortingState, action: SortingAction) => {
+const reducer = (state: SortingState, action: SortingAction) => {
     switch (action.type) {
         case "SET_ARRAY":
             return { ...state, array: action.payload };
@@ -85,27 +98,11 @@ const sortingReducer = (state: SortingState, action: SortingAction) => {
         case "SET_SORTING_TIMEOUT":
             return { ...state, sortingTimeout: action.payload };
 
-        case "SET_IS_ARRAY_LOADING":
-            return { ...state, isArrayLoading: action.payload };
-
-        case "SET_SORT_DATA":
-            return {
-                ...state,
-                isArrayLoading: false,
-                stepIdx: 0,
-                sortingSteps: action.payload.sortingSteps,
-                colorSortingSteps: action.payload.colorSortingSteps,
-                comparisons: action.payload.comparisons,
-                numSwaps: action.payload.numSwaps,
-                sortedIdxs: action.payload.sortedIdxs,
-            };
-
         case "RESET_STATE":
-            return getInitialState(action.payload);
+            return getInitialState(state.sortingAlgo);
 
-        default:
-            throw new Error();
+        default: throw new Error();
     }
 };
 
-export default sortingReducer;
+export default reducer;
