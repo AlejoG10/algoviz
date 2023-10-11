@@ -1,23 +1,41 @@
-interface Algorithm {
-    sortingSteps: SortingData["sortingSteps"];
-    colorSortingSteps: SortingData["colorSortingSteps"];
-    comparisons: SortingData["comparisons"];
-    numSwaps: SortingData["numSwaps"];
-    sortedIdxs: SortingData["sortedIdxs"];
+abstract class Algorithm {
+    sortingSteps: number[][];
+    colorSortingSteps: ColorValue[][];
+    comparisons: any;
+    numSwaps: number[];
+    sortedIdxs: number[];
 
-    resetAttributes(): void
-    sort(array: number[]): void
-    sortColors(array: ColorValue[]): void
-    isSky(...args: any[]): boolean
-    isOrange(...args: any[]): boolean
-    isRose(...args: any[]): boolean
-    isSorted(...args: any[]): boolean
-    
-    // getters
-    getStepAtIdx(idx: number): number[]
-    getColorStepAtIdx(idx: number): ColorValue[]
-    getStepsLength(color: boolean): number
-    getNumSwapsAtIdx(idx: number): number
+    constructor(comparisons: any) {
+        this.sortingSteps = [];
+        this.colorSortingSteps = [];
+        this.comparisons = comparisons;
+        this.numSwaps = [];
+        this.sortedIdxs = [];
+    }
+
+    getStepAtIdx(idx: number): number[] {
+        return this.sortingSteps[idx];
+    }
+
+    getColorStepAtIdx(idx: number): ColorValue[] {
+        return this.colorSortingSteps[idx];
+    }
+
+    getStepsLength(color: boolean): number {
+        return !color ? this.sortingSteps.length : this.colorSortingSteps.length;
+    }
+
+    getNumSwapsAtIdx(idx: number): number {
+        return this.numSwaps[idx];
+    }
+
+    abstract resetAttributes(): void
+    abstract sort(array: number[]): void
+    abstract sortColors(array: ColorValue[]): void
+    abstract isSky(...args: any[]): boolean
+    abstract isOrange(...args: any[]): boolean
+    abstract isRose(...args: any[]): boolean
+    abstract isSorted(...args: any[]): boolean
 }
 
 export default Algorithm;

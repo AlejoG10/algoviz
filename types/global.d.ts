@@ -8,12 +8,4 @@ export declare global {
     type StyleMode = "default" | "color"
     type ColorSystem = "HEX" | "HSL" | "RGB"
     type ColorValue = [string, number] // HSL, HEX, RGB
-
-    type SortingData = {
-        sortingSteps: number[][],
-        colorSortingSteps: ColorValue[][],
-        comparisons: number[] | [number, number, number][];
-        numSwaps: number[];
-        sortedIdxs: number[];
-    }
 }

@@ -1,19 +1,9 @@
 import { swap } from "./utils";
 import Algorithm from "./Algorithm";
 
-class BubbleSort implements Algorithm {
-    sortingSteps: SortingData["sortingSteps"];
-    colorSortingSteps: SortingData["colorSortingSteps"];
-    comparisons: number[];
-    numSwaps: SortingData["numSwaps"];
-    sortedIdxs: SortingData["sortedIdxs"];
-
+class BubbleSort extends Algorithm {
     constructor() {
-        this.sortingSteps = [];
-        this.colorSortingSteps = [];
-        this.comparisons = [0];
-        this.numSwaps = [];
-        this.sortedIdxs = [];
+        super([0])
     }
 
     resetAttributes() {
@@ -40,8 +30,8 @@ class BubbleSort implements Algorithm {
                 if (array[j] > array[j + 1]) {
                     swap(array, j, j + 1);
                     swapped = true;
-                    numSwapsCounter++;
                     this.sortingSteps.push([...array]);
+                    numSwapsCounter++;
                 }
 
                 if (j !== N - i - 2) this.sortedIdxs.push(-1);
@@ -96,24 +86,6 @@ class BubbleSort implements Algorithm {
 
     allSorted(stepIdx: number): boolean {
         return stepIdx !== 0 && stepIdx >= this.sortedIdxs.length
-    }
-
-    // getters
-
-    getStepAtIdx(idx: number): number[] {
-        return this.sortingSteps[idx];
-    }
-
-    getColorStepAtIdx(idx: number): ColorValue[] {
-        return this.colorSortingSteps[idx];
-    }
-
-    getStepsLength(color: boolean): number {
-        return !color ? this.sortingSteps.length : this.colorSortingSteps.length;
-    }
-
-    getNumSwapsAtIdx(idx: number): number {
-        return this.numSwaps[idx];
     }
 }
 

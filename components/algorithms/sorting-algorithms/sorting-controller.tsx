@@ -25,11 +25,10 @@ const SortingController: React.FC<SortingControllerProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [state, dispatch] = useReducer(reducer, getInitialState(sortingAlgo));
 
-  // TODO: mapping
   const algoIdMap: Record<any, Algorithm> = {
     "bubble-sort": new BubbleSort(),
     "selection-sort": new SelectionSort(),
-    "insertion-sort": new BubbleSort(),
+    "insertion-sort": new InsertionSort(),
   };
 
   const algorithm: Algorithm = useMemo(
@@ -54,9 +53,15 @@ const SortingController: React.FC<SortingControllerProps> = ({
   };
 
   const executeAlgorithm = () => {
-    state.styleMode === "default"
-      ? algorithm.sort(state.array)
-      : algorithm.sortColors(state.colorArray);
+    if (state.styleMode === "default") {
+      const copyArray = [...state.array];
+      algorithm.sort(copyArray);
+      dispatch({ type: "SET_ARRAY", payload: copyArray });
+    } else {
+      const copyArray = [...state.colorArray];
+      algorithm.sortColors(copyArray);
+      dispatch({ type: "SET_COLOR_ARRAY", payload: copyArray });
+    }
 
     increaseSteps();
   };
@@ -128,6 +133,24 @@ const SortingController: React.FC<SortingControllerProps> = ({
       dispatch({ type: "SET_SORTING_STATE", payload: "debug" });
 
     dispatch({ type: "PREVIOUS_STEP_IDX" });
+  };
+
+  const handleNewArray = () => {
+    if (state.styleMode === "default") {
+      dispatch({
+        type: "SET_ARRAY",
+        payload: genArray(state.arraySize, state.maxValue, state.sortingOrder),
+      });
+    } else {
+      dispatch({
+        type: "SET_COLOR_ARRAY",
+        payload: genColorArray(
+          state.arraySize,
+          state.colorSystem,
+          state.sortingOrder
+        ),
+      });
+    }
   };
 
   const handleReset = () => {
@@ -335,6 +358,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
           handleNextStep={handleNextStep}
           handlePrevStep={handlePrevStep}
           handlePause={handlePause}
+          handleNewArray={handleNewArray}
           handleReset={handleReset}
         />
       </PlaygroundContainer>

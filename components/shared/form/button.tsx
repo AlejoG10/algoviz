@@ -24,6 +24,10 @@ const Button: React.FC<ButtonProps> = ({
           bgColor === "red" &&
           "bg-rose-500 hover:bg-rose-600 focus:bg-rose-600 focus:outline-none"
         }
+        ${
+          bgColor === "orange" &&
+          "bg-orange-500 hover:bg-orange-600 focus:bg-orange-600 focus:outline-none"
+        }
         ${circle ? "rounded-full" : "rounded-md"}
         ${className}`}
       onClick={onClick}

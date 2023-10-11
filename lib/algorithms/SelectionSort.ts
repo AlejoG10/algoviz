@@ -1,19 +1,9 @@
 import { swap } from "./utils";
 import Algorithm from "./Algorithm";
 
-class SelectionSort implements Algorithm {
-    sortingSteps: SortingData["sortingSteps"];
-    colorSortingSteps: SortingData["colorSortingSteps"];
-    comparisons: [number, number, number][];
-    numSwaps: SortingData["numSwaps"];
-    sortedIdxs: SortingData["sortedIdxs"];
-
+class SelectionSort extends Algorithm {
     constructor() {
-        this.sortingSteps = [];
-        this.colorSortingSteps = [];
-        this.comparisons = [[0, 0, 1]];
-        this.numSwaps = [];
-        this.sortedIdxs = [];
+        super([[0, 0, 1]]);
     }
 
     resetAttributes(): void {
@@ -107,27 +97,11 @@ class SelectionSort implements Algorithm {
     }
 
     isSorted(idx: number, stepIdx: number): boolean {
-        return this.sortedIdxs.slice(0, stepIdx).includes(idx) || this.allSorted(stepIdx) && !this.isOrange(idx, stepIdx);;
+        return this.sortedIdxs.slice(0, stepIdx).includes(idx) || this.allSorted(stepIdx) && !this.isOrange(idx, stepIdx);
     }
 
     allSorted(stepIdx: number): boolean {
         return stepIdx !== 0 && stepIdx >= this.sortedIdxs.length
-    }
-
-    getStepAtIdx(idx: number): number[] {
-        return this.sortingSteps[idx];
-    }
-
-    getColorStepAtIdx(idx: number): ColorValue[] {
-        return this.colorSortingSteps[idx];
-    }
-
-    getStepsLength(color: boolean): number {
-        return !color ? this.sortingSteps.length : this.colorSortingSteps.length;
-    }
-
-    getNumSwapsAtIdx(idx: number): number {
-        return this.numSwaps[idx];
     }
 }
 
