@@ -28,7 +28,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
   // TODO: mapping
   const algoIdMap: Record<any, Algorithm> = {
     "bubble-sort": new BubbleSort(),
-    "selection-sort": new BubbleSort(),
+    "selection-sort": new SelectionSort(),
     "insertion-sort": new BubbleSort(),
   };
 
@@ -132,8 +132,11 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   const handleReset = () => {
     setIsLoading(true);
+
+    algorithm.resetAttributes();
     clearInterval(state.sortingTimeout);
     dispatch({ type: "RESET_STATE" });
+
     setIsLoading(false);
   };
 
@@ -318,7 +321,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
         )}
 
         <Console
-          comparisons={state.stepIdx}
+          steps={state.stepIdx}
           swaps={algorithm.getNumSwapsAtIdx(state.stepIdx)}
           isLoading={isLoading}
         />

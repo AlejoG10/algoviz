@@ -1,11 +1,11 @@
 interface ConsoleProps {
-  comparisons: number;
+  steps: number;
   swaps: number;
   isLoading: boolean;
 }
 
 const Console: React.FC<ConsoleProps> = ({
-  comparisons = 0,
+  steps = 0,
   swaps = 0,
   isLoading,
 }) => {
@@ -18,7 +18,7 @@ const Console: React.FC<ConsoleProps> = ({
       {!isLoading && (
         <div className="flex items-center gap-x-6 text-neutral-300 whitespace-nowrap">
           <p>&gt;&gt;&gt;</p>
-          <p>Comparisons: {comparisons}</p>
+          <p>Steps: {steps}</p>
           <hr className="border-l border-neutral-400 h-5 w-px" />
           <p>Swaps: {swaps}</p>
         </div>

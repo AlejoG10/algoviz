@@ -50,49 +50,26 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   // HELPERS
   // -------
 
-  // const isSky = (idx: number) => {
-  //   switch (sortingAlgo) {
-  //     case "selection-sort":
-  //       const selectionSort = new SelectionSort();
-  //       return selectionSort.isSky(
-  //         idx,
-  //         stepIdx,
-  //         comparisons as [number, number, number][]
-  //       );
-
-  //     default:
-  //       return false;
-  //   }
-  // };
-
-  const isOrange = (idx: number) => {
+  const isSky = (idx: number) => {
     switch (sortingAlgo) {
-      case "bubble-sort":
-        return algorithm.isOrange(idx, stepIdx);
+      case "selection-sort":
+        return algorithm.isSky(idx, stepIdx);
 
       default:
         return false;
     }
+  };
+
+  const isOrange = (idx: number) => {
+    return algorithm.isOrange(idx, stepIdx);
   };
 
   const isRose = (idx: number) => {
-    switch (sortingAlgo) {
-      case "bubble-sort":
-        return algorithm.isRose(idx, stepIdx);
-
-      default:
-        return false;
-    }
+    return algorithm.isRose(idx, stepIdx);
   };
 
   const isSorted = (idx: number) => {
-    switch (sortingAlgo) {
-      case "bubble-sort":
-        return algorithm.isSorted(idx, stepIdx);
-
-      default:
-        return false;
-    }
+    return algorithm.isSorted(idx, stepIdx);
   };
 
   // --------
@@ -137,7 +114,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value[1]}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSky={false}
+                isSky={isSky(i)}
                 isOrange={isOrange(i)}
                 isRose={isRose(i)}
                 isSorted={isSorted(i)}
@@ -152,7 +129,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSky={false}
+                isSky={isSky(i)}
                 isOrange={isOrange(i)}
                 isRose={isRose(i)}
                 isSorted={isSorted(i)}
