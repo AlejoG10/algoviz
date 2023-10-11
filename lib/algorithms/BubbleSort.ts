@@ -41,15 +41,13 @@ class BubbleSort implements Algorithm {
         };
     }
 
-    isSwappingItem(): boolean { return false; }
+    isSky(): boolean { return false; }
 
-    isCurrentMin(): boolean { return false; }
-
-    isCurrentMax(idx: number, stepIdx: number, comparisons: number[]): boolean {
+    isOrange(idx: number, stepIdx: number, comparisons: number[]): boolean {
         return comparisons[stepIdx] === idx;
     }
 
-    isPossibleMinOrMax(idx: number, stepIdx: number, comparisons: number[]): boolean {
+    isRose(idx: number, stepIdx: number, comparisons: number[]): boolean {
         return comparisons[stepIdx] === idx - 1;
     }
 

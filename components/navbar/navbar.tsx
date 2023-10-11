@@ -13,7 +13,7 @@ const Navbar = () => {
             alt="logo"
             width={50}
             height={50}
-            className="group-hover:animate-spin"
+            className="group-hover:animate-spin-slow"
           />
           <p className="text-2xl text-neutral-800 font-semibold">VisuAlgo</p>
         </Link>

@@ -13,7 +13,7 @@ export type SortingState = {
     stepIdx: number;
     sortingSteps: number[][];
     colorSortingSteps: ColorValue[][];
-    comparisons: number[] | [number, number, number][];
+    comparisons: SortingData["comparisons"];
     numSwaps: number[];
     sortedIdxs: number[];
     arraySize: number;
@@ -51,7 +51,7 @@ export type SortingAction =
         payload: {
             sortingSteps: number[][];
             colorSortingSteps: ColorValue[][];
-            comparisons: number[] | [number, number, number][];
+            comparisons: SortingData["comprisons"];
             numSwaps: number[];
             sortedIdxs: number[];
         };

@@ -1,4 +1,9 @@
-import { BubbleSort, SelectionSort } from "@/lib/algorithms";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+import { SortingData } from "@/types/sorting";
+import { BubbleSort, InsertionSort, SelectionSort } from "@/lib/algorithms";
 import VisualizerContainer from "@/components/shared/containers/visualizer-container";
 import Bar from "@/components/shared/bar";
 
@@ -6,7 +11,7 @@ interface BaseProps {
   sortingAlgo: SortingAlgo;
   stepIdx: number;
   stepsLength: number;
-  comparisons: number[] | [number, number, number][];
+  comparisons: SortingData["comparisons"];
   sortedIdxs: number[];
   showValues: boolean;
   isLoading: boolean;
@@ -40,21 +45,21 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
   showValues,
   isLoading,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [visible, setVisible] = useState(true);
+
   const HEIGHT = 400;
 
   // -------
   // HELPERS
   // -------
 
-  const isCurrentMinOrMax = (idx: number) => {
+  const isSky = (idx: number) => {
     switch (sortingAlgo) {
-      case "bubble-sort":
-        const bubbleSort = new BubbleSort();
-        return bubbleSort.isCurrentMax(idx, stepIdx, comparisons as number[]);
-
       case "selection-sort":
         const selectionSort = new SelectionSort();
-        return selectionSort.isCurrentMin(
+        return selectionSort.isSky(
           idx,
           stepIdx,
           comparisons as [number, number, number][]
@@ -65,34 +70,38 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
     }
   };
 
-  const isSwappingItem = (idx: number) => {
+  const isOrange = (idx: number) => {
     switch (sortingAlgo) {
+      case "bubble-sort":
+        const bubbleSort = new BubbleSort();
+        return bubbleSort.isOrange(idx, stepIdx, comparisons as number[]);
+
       case "selection-sort":
         const selectionSort = new SelectionSort();
-        return selectionSort.isSwappingItem(
+        return selectionSort.isOrange(
           idx,
           stepIdx,
           comparisons as [number, number, number][]
         );
+
+      case "insertion-sort":
+        const insertionSort = new InsertionSort();
+        return insertionSort.isOrange(idx, stepIdx, comparisons as number[]);
 
       default:
         return false;
     }
   };
 
-  const isPossibleMinOrMax = (idx: number) => {
+  const isRose = (idx: number) => {
     switch (sortingAlgo) {
       case "bubble-sort":
         const bubbleSort = new BubbleSort();
-        return bubbleSort.isPossibleMinOrMax(
-          idx,
-          stepIdx,
-          comparisons as number[]
-        );
+        return bubbleSort.isRose(idx, stepIdx, comparisons as number[]);
 
       case "selection-sort":
         const selectionSort = new SelectionSort();
-        return selectionSort.isPossibleMinOrMax(
+        return selectionSort.isRose(
           idx,
           stepIdx,
           comparisons as [number, number, number][]
@@ -123,13 +132,44 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
           comparisons as [number, number, number][]
         );
 
+      case "insertion-sort":
+        const insertionSort = new InsertionSort();
+        return insertionSort.isSorted(idx, stepIdx, sortedIdxs);
+
       default:
         return false;
     }
   };
 
+  // --------
+  // HANDLERS
+  // --------
+
+  const checkVisibility = () => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.offsetWidth;
+      setVisible(containerWidth / array.length >= 2.5);
+    }
+  };
+
+  // -----------
+  // USE EFFECTS
+  // -----------
+
+  useEffect(() => {
+    checkVisibility();
+
+    window.addEventListener("resize", checkVisibility);
+    return () => window.removeEventListener("resize", checkVisibility);
+  }, [containerRef.current, array.length]);
+
   return (
-    <VisualizerContainer height={HEIGHT} loading={isLoading}>
+    <VisualizerContainer
+      ref={containerRef}
+      height={HEIGHT}
+      visible={visible}
+      loading={isLoading}
+    >
       {colorSystem
         ? array.map((value: ColorValue, i) => {
             const maxValue =
@@ -143,11 +183,9 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value[1]}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSwappingItem={
-                  !isSorted(i) && !isCurrentMinOrMax(i) && isSwappingItem(i)
-                }
-                isCurrentMinOrMax={isCurrentMinOrMax(i)}
-                isPossibleMinOrMax={isPossibleMinOrMax(i)}
+                isSky={!isSorted(i) && !isOrange(i) && isSky(i)}
+                isOrange={isOrange(i)}
+                isRose={isRose(i)}
                 isSorted={isSorted(i)}
               />
             );
@@ -160,11 +198,9 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
                 value={value}
                 maxValue={maxValue}
                 showValue={showValues}
-                isSwappingItem={
-                  !isSorted(i) && !isCurrentMinOrMax(i) && isSwappingItem(i)
-                }
-                isCurrentMinOrMax={isCurrentMinOrMax(i)}
-                isPossibleMinOrMax={isPossibleMinOrMax(i)}
+                isSky={!isSorted(i) && !isOrange(i) && isSky(i)}
+                isOrange={isOrange(i)}
+                isRose={isRose(i)}
                 isSorted={isSorted(i)}
               />
             );

@@ -63,15 +63,15 @@ const ColorIndex: React.FC<ColorIndexProps> = ({ algo, isLoading }) => {
     ],
     "insertion-sort": [
       {
-        label: "Current max",
+        label: "Insertion item",
         className: "bg-orange-500 ring-orange-500",
       },
       {
-        label: "Possible new max",
+        label: "Comparison item",
         className: "bg-rose-500 ring-rose-500",
       },
       {
-        label: "Sorted",
+        label: "Partially sorted",
         className: "bg-green-500 ring-green-500",
       },
     ],
@@ -107,7 +107,7 @@ const ColorIndex: React.FC<ColorIndexProps> = ({ algo, isLoading }) => {
             <hr />
             {index.map((colorIndex) =>
               isLoading ? (
-                <ColorIndexRowSkeleton />
+                <ColorIndexRowSkeleton key={colorIndex.label} />
               ) : (
                 <ColorIndexRow key={colorIndex.label} {...colorIndex} />
               )

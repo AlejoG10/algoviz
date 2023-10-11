@@ -11,12 +11,12 @@ class SelectionSort implements Algorithm {
         const numSwaps: number[] = [numSwapsCounter];
         const sortedIdxs: number[] = [];
 
+        const colorArray = array as ColorValue[];
         for (let i = 0; i < array.length - 1; i++) {
             let minIdx = i;
             for (let j = i + 1; j < array.length; j++) {
                 comparisons.push([i, minIdx, j]);
                 if (colorMode) {
-                    const colorArray = array as ColorValue[];
                     if (colorArray[j][1] < colorArray[minIdx][1]) {
                         minIdx = j;
                     }
@@ -28,7 +28,7 @@ class SelectionSort implements Algorithm {
                 }
                 j === array.length - 1 && numSwapsCounter++;
                 colorMode
-                    ? colorSortingSteps.push([...array as ColorValue[]])
+                    ? colorSortingSteps.push([...colorArray])
                     : sortingSteps.push([...array as number[]]);
                 numSwaps.push(numSwapsCounter);
             }
@@ -37,7 +37,7 @@ class SelectionSort implements Algorithm {
                 if (i === array.length - 2) {
                     comparisons.push([i, minIdx, array.length - 1]);
                     colorMode
-                        ? colorSortingSteps.push([...array as ColorValue[]])
+                        ? colorSortingSteps.push([...colorArray])
                         : sortingSteps.push([...array as number[]]);
                 }
             }
@@ -51,19 +51,15 @@ class SelectionSort implements Algorithm {
         };
     }
 
-    isSwappingItem(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
+    isSky(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
         return stepIdx < comparisons.length && comparisons[stepIdx][0] === idx;
     }
 
-    isCurrentMin(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
+    isOrange(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
         return stepIdx < comparisons.length && comparisons[stepIdx][1] === idx;
     }
 
-    isCurrentMax(): boolean { return false; }
-
-    isLocalMax(): boolean { return false; }
-
-    isPossibleMinOrMax(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
+    isRose(idx: number, stepIdx: number, comparisons: [number, number, number][]): boolean {
         return stepIdx < comparisons.length && comparisons[stepIdx][2] === idx;
     }
 

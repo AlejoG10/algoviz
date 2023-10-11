@@ -2,10 +2,9 @@ import { SortingData } from "@/types/sorting";
 
 interface Algorithm {
     sort(array: number[] | ColorValue[], colorMode?: boolean): SortingData
-    isSwappingItem(...args: any[]): boolean
-    isCurrentMin(...args: any[]): boolean
-    isCurrentMax(...args: any[]): boolean
-    isPossibleMinOrMax(...args: any[]): boolean
+    isSky(...args: any[]): boolean
+    isOrange(...args: any[]): boolean
+    isRose(...args: any[]): boolean
     isSorted(...args: any[]): boolean
 }
 

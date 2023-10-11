@@ -3,10 +3,11 @@ interface BaseProps {
   value: number;
   maxValue: number;
   showValue: boolean;
-  isSwappingItem: boolean;
-  isCurrentMinOrMax: boolean;
-  isPossibleMinOrMax: boolean;
+  isSky: boolean;
+  isOrange: boolean;
+  isRose: boolean;
   isSorted: boolean;
+  handleWidthChange?: ((width: number) => void) | undefined;
 }
 
 interface DefaultModeBarProps extends BaseProps {
@@ -25,13 +26,13 @@ const Bar: React.FC<BarProps> = ({
   color,
   maxValue,
   showValue,
-  isSwappingItem,
-  isCurrentMinOrMax,
-  isPossibleMinOrMax,
+  isSky,
+  isOrange,
+  isRose,
   isSorted,
+  handleWidthChange,
 }) => {
   const height = Math.floor((value / maxValue) * maxHeight);
-
   let styles: any = { height: `${height}px` };
   if (color) styles = { ...styles, backgroundColor: `${color}` };
 
@@ -40,9 +41,9 @@ const Bar: React.FC<BarProps> = ({
       style={styles}
       className={`flex justify-center items-center rounded-t-sm lg:rounded-t-md w-full
         ${!color && isSorted ? "bg-green-500" : "bg-neutral-800 "}
-        ${!color && isPossibleMinOrMax && "bg-rose-500"} 
-        ${!color && isSwappingItem && "bg-sky-500"} 
-        ${!color && isCurrentMinOrMax && "bg-orange-400"} 
+        ${!color && isRose && "bg-rose-500"} 
+        ${!color && isSky && "bg-sky-500"} 
+        ${!color && isOrange && "bg-orange-400"} 
       `}
     >
       {showValue && (
@@ -55,9 +56,9 @@ const Bar: React.FC<BarProps> = ({
         <span
           className={`absolute bottom-2 rounded-full w-3 h-3
             ${isSorted && "bg-green-500"}
-            ${isPossibleMinOrMax && "bg-rose-500"}
-            ${isSwappingItem && "bg-sky-500"}
-            ${isCurrentMinOrMax && "bg-orange-400"}
+            ${isRose && "bg-rose-500"}
+            ${isSky && "bg-sky-500"}
+            ${isOrange && "bg-orange-400"}
         `}
         />
       )}

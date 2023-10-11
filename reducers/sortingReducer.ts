@@ -1,4 +1,4 @@
-import { SortingState, SortingAction } from "@/types/sorting";
+import { SortingState, SortingAction, SortingData } from "@/types/sorting";
 import { genArray, genColorArray } from "@/lib/utils";
 
 export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
@@ -8,7 +8,7 @@ export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
     const colorSystem: ColorSystem = "HEX";
     const array: number[] = genArray(arraySize, maxValue);
     const colorArray: ColorValue[] = genColorArray(arraySize, colorSystem);
-    let comparisons: number[] | [number, number, number][];
+    let comparisons: SortingData["comparisons"];
     switch (sortingAlgo) {
         case "bubble-sort":
             comparisons = [0]
@@ -17,7 +17,7 @@ export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
             comparisons = [[0, 0, 1]]
             break;
         case "insertion-sort":
-            comparisons = [0]
+            comparisons = [1]
             break;
     }
 
