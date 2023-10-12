@@ -53,17 +53,23 @@ const SortingController: React.FC<SortingControllerProps> = ({
   };
 
   const executeAlgorithm = () => {
+    algorithm.resetAttributes();
     if (state.styleMode === "default") {
-      const copyArray = [...state.array];
-      algorithm.sort(copyArray);
-      dispatch({ type: "SET_ARRAY", payload: copyArray });
+      const arrayCopy = [...state.array];
+      algorithm.sort(arrayCopy);
+      dispatch({ type: "SET_ARRAY", payload: arrayCopy });
     } else {
-      const copyArray = [...state.colorArray];
-      algorithm.sortColors(copyArray);
-      dispatch({ type: "SET_COLOR_ARRAY", payload: copyArray });
+      const arrayCopy = [...state.colorArray];
+      algorithm.sortColors(arrayCopy);
+      dispatch({ type: "SET_COLOR_ARRAY", payload: arrayCopy });
     }
 
     increaseSteps();
+  };
+
+  const handleConfigChange = () => {
+    algorithm.resetAttributes();
+    dispatch({ type: "RESET_STEP_IDX" });
   };
 
   // --------
@@ -174,7 +180,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets array (or colorArray) when sortingOrder changes
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     if (state.styleMode === "default") {
       let newArray: number[] = [...state.array];
       switch (state.sortingOrder) {
@@ -208,7 +214,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // hides values (if necessary) when array size > 100
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     if (state.arraySize > 100 && state.showValues) {
       dispatch({ type: "TOGGLE_SHOW_VALUES" });
     }
@@ -216,7 +222,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets array when arraySize or maxValue change
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     if (state.styleMode === "default") {
       dispatch({
         type: "SET_ARRAY",
@@ -227,7 +233,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets colorArray when arraySize or colorSystem change
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     if (state.styleMode === "color") {
       dispatch({
         type: "SET_COLOR_ARRAY",
@@ -242,14 +248,14 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   // sets maxValue to 400 or 0 when styleMode changes to default or color respectively
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     const payload = state.styleMode === "default" ? 400 : 0;
     dispatch({ type: "SET_MAX_VALUE", payload });
   }, [state.styleMode]);
 
   // generates a new array (or colorArray), based on the current configs, when styleMode changes
   useEffect(() => {
-    algorithm.resetAttributes();
+    handleConfigChange();
     if (state.styleMode === "default") {
       const array: number[] = genArray(
         state.arraySize,

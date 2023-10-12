@@ -20,6 +20,7 @@ export type SortingAction =
     | { type: "SET_ARRAY"; payload: number[] }
     | { type: "SET_COLOR_ARRAY"; payload: ColorValue[] }
     | { type: "SET_ARRAY_SIZE"; payload: number }
+    | { type: "RESET_STEP_IDX" }
     | { type: "NEXT_STEP_IDX" }
     | { type: "PREVIOUS_STEP_IDX" }
     | { type: "SET_MAX_VALUE"; payload: number }
@@ -64,6 +65,9 @@ const reducer = (state: SortingState, action: SortingAction) => {
 
         case "SET_COLOR_ARRAY":
             return { ...state, colorArray: action.payload };
+
+        case "RESET_STEP_IDX":
+            return { ...state, stepIdx: 0 };
 
         case "NEXT_STEP_IDX":
             return { ...state, stepIdx: state.stepIdx + 1 };

@@ -25,7 +25,7 @@ class InsertionSort extends Algorithm {
         for (i = 1; i < N; i++) {
             j = i;
 
-            !swapped && this.sortingSteps.push([...array]);
+            this.sortingSteps.push([...array]);
             this.comparisons.push(i);
 
             swapped = false;
@@ -33,17 +33,13 @@ class InsertionSort extends Algorithm {
                 swap(array, j, j - 1);
                 swapped = true;
                 this.sortingSteps.push([...array]);
-                if (j > 1 && array[j - 1] < array[j - 2]) {
-                    this.comparisons.push(j - 1);
-                }
+                this.comparisons.push(j - 1);
                 this.numSwaps.push(++numSwapsCounter);
                 this.sortedIdxs.push(j);
                 j--;
             }
-            if (!swapped) {
-                this.numSwaps.push(numSwapsCounter);
-                this.sortedIdxs.push(i);
-            }
+            this.numSwaps.push(numSwapsCounter);
+            this.sortedIdxs.push(i);
         }
         this.comparisons.push(j!);
         this.numSwaps.push(numSwapsCounter);
@@ -60,7 +56,7 @@ class InsertionSort extends Algorithm {
         for (i = 1; i < N; i++) {
             j = i;
 
-            !swapped && this.colorSortingSteps.push([...array]);
+            this.colorSortingSteps.push([...array]);
             this.comparisons.push(i);
 
             swapped = false;
@@ -68,27 +64,32 @@ class InsertionSort extends Algorithm {
                 swap(array, j, j - 1);
                 swapped = true;
                 this.colorSortingSteps.push([...array]);
-                if (j > 1 && array[j - 1] < array[j - 2]) {
-                    this.comparisons.push(j - 1);
-                }
+                this.comparisons.push(j - 1);
+                this.numSwaps.push(++numSwapsCounter);
                 this.sortedIdxs.push(j);
                 j--;
             }
-            !swapped && this.sortedIdxs.push(i);
+            this.numSwaps.push(numSwapsCounter);
+            this.sortedIdxs.push(i);
         }
         this.comparisons.push(j!);
+        this.numSwaps.push(numSwapsCounter);
     }
 
     isSky(): boolean { return false }
 
     isOrange(idx: number, stepIdx: number): boolean {
-        return this.comparisons[stepIdx] === idx;
+        return this.comparisons[stepIdx] === idx && !this.allSorted(stepIdx);
     }
 
     isRose(): boolean { return false }
 
     isSorted(idx: number, stepIdx: number): boolean {
         return idx === 0 || this.sortedIdxs.slice(0, stepIdx).includes(idx)
+    }
+
+    allSorted(stepIdx: number): boolean {
+        return stepIdx !== 0 && stepIdx >= this.sortedIdxs.length
     }
 }
 

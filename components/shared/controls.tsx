@@ -92,7 +92,7 @@ const Controls: React.FC<ControlsProps> = ({
                   circle
                   bgColor="orange"
                   onClick={handleNewArray}
-                  disabled={sortingStatus === "running"}
+                  disabled={sortingStatus !== "idle"}
                 >
                   <RefreshCcw size={20} />
                 </Button>
