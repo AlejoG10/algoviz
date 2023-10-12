@@ -71,6 +71,30 @@ const ColorIndex: React.FC<ColorIndexProps> = ({ algo, isLoading }) => {
         className: "bg-green-500 ring-green-500",
       },
     ],
+    "merge-sort": [
+      {
+        label: "Left array",
+        className: "bg-orange-500 ring-orange-500",
+      },
+      {
+        label: "Right array",
+        className: "bg-rose-500 ring-rose-500",
+      },
+      {
+        label: "Sorted partition",
+        className: "bg-green-500 ring-green-500",
+      },
+    ],
+    "quick-sort": [
+      {
+        label: "TO-DO",
+        className: "bg-orange-500 ring-orange-500",
+      },
+      {
+        label: "TO-DO",
+        className: "bg-green-500 ring-green-500",
+      },
+    ],
   };
 
   const index: ColorIndexRow[] = useMemo(() => algoColorIndexMap[algo], [algo]);

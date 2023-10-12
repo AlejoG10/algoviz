@@ -5,7 +5,13 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import reducer, { getInitialState } from "@/reducers/sortingReducer";
 import { genArray, genColorArray } from "@/lib/utils";
 import Algorithm from "@/lib/algorithms/Algorithm";
-import { BubbleSort, InsertionSort, SelectionSort } from "@/lib/algorithms";
+import {
+  BubbleSort,
+  InsertionSort,
+  MergeSort,
+  QuickSort,
+  SelectionSort,
+} from "@/lib/algorithms";
 import ControllerContainer from "@/components/shared/containers/controller-container";
 import SidebarContainer from "@/components/shared/containers/sidebar-container";
 import PlaygroundContainer from "@/components/shared/containers/playground-container";
@@ -29,6 +35,8 @@ const SortingController: React.FC<SortingControllerProps> = ({
     "bubble-sort": new BubbleSort(),
     "selection-sort": new SelectionSort(),
     "insertion-sort": new InsertionSort(),
+    "merge-sort": new MergeSort(),
+    "quick-sort": new QuickSort(),
   };
 
   const algorithm: Algorithm = useMemo(
@@ -55,13 +63,27 @@ const SortingController: React.FC<SortingControllerProps> = ({
   const executeAlgorithm = () => {
     algorithm.resetAttributes();
     if (state.styleMode === "default") {
-      const arrayCopy = [...state.array];
-      algorithm.sort(arrayCopy);
-      dispatch({ type: "SET_ARRAY", payload: arrayCopy });
+      let arrayCopy = [...state.array];
+
+      if (state.sortingAlgo === "merge-sort") {
+        arrayCopy = algorithm.sort(arrayCopy) as number[];
+      } else {
+        algorithm.sort(arrayCopy);
+      }
+
+      dispatch({ type: "SET_ARRAY", payload: algorithm.getStepAtIdx(0) });
     } else {
-      const arrayCopy = [...state.colorArray];
-      algorithm.sortColors(arrayCopy);
-      dispatch({ type: "SET_COLOR_ARRAY", payload: arrayCopy });
+      let arrayCopy = [...state.colorArray];
+
+      if (state.sortingAlgo === "merge-sort") {
+        arrayCopy = algorithm.sortColors(arrayCopy) as ColorValue[];
+      } else {
+        algorithm.sortColors(arrayCopy);
+      }
+      dispatch({
+        type: "SET_COLOR_ARRAY",
+        payload: algorithm.getColorStepAtIdx(0),
+      });
     }
 
     increaseSteps();
@@ -78,6 +100,13 @@ const SortingController: React.FC<SortingControllerProps> = ({
 
   const handleArraySizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_ARRAY_SIZE", payload: Number(e.target.value) });
+  };
+
+  const adjustPower2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    var value = parseInt(e.target.value, 10);
+    var power = Math.round(Math.log2(value));
+    var adjusted = Math.pow(2, power);
+    dispatch({ type: "SET_ARRAY_SIZE", payload: Number(adjusted) });
   };
 
   const handleMaxValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +171,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
   };
 
   const handleNewArray = () => {
+    handleConfigChange();
     if (state.styleMode === "default") {
       dispatch({
         type: "SET_ARRAY",
@@ -308,6 +338,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
       <SidebarContainer>
         <ColorIndex algo={state.sortingAlgo} isLoading={isLoading} />
         <SortingConfig
+          sortingAlgo={state.sortingAlgo}
           sortingStatus={state.sortingStatus}
           arraySize={state.arraySize}
           maxValue={state.maxValue}
@@ -318,6 +349,7 @@ const SortingController: React.FC<SortingControllerProps> = ({
           showValues={state.showValues}
           isLoading={isLoading}
           handleArraySizeChange={handleArraySizeChange}
+          adjustPower2={adjustPower2}
           handleMaxValueChange={handleMaxValueChange}
           handleDelayChange={handleDelayChange}
           handleSortingOrderChange={handleSortingOrderChange}

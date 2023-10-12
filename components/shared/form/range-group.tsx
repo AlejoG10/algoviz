@@ -4,35 +4,25 @@ interface RangeGroupProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-const RangeGroup: React.FC<RangeGroupProps> = ({
-  label,
-  name,
-  min,
-  max,
-  step,
-  value,
-  className,
-  onChange,
-  disabled,
-}) => {
+const RangeGroup: React.FC<RangeGroupProps> = ({ label, ...props }) => {
   return (
     <div className="flex items-center gap-x-5 w-full">
-      <Label htmlFor={name} className="w-24">
+      <Label htmlFor={props.name} className="w-24">
         {label}
       </Label>
       <input
-        name={name}
+        name={props.name}
         type="range"
-        step={step}
-        min={min}
-        max={max}
-        value={value}
-        onChange={onChange}
-        className={`accent-neutral-800 flex-1 ${className}`}
-        disabled={disabled}
+        step={props.step}
+        min={props.min}
+        max={props.max}
+        value={props.value}
+        onChange={props.onChange}
+        className={`accent-neutral-800 flex-1 ${props.className}`}
+        disabled={props.disabled}
       />
       <span className="text-neutral-600 text-base text-center w-10">
-        {value}
+        {props.value}
       </span>
     </div>
   );

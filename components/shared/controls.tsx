@@ -82,7 +82,7 @@ const Controls: React.FC<ControlsProps> = ({
             <MyTooltip
               placement="bottom"
               content="generate new array"
-              color="warning"
+              color="danger"
               offset={15}
             >
               {isLoading ? (
@@ -90,7 +90,7 @@ const Controls: React.FC<ControlsProps> = ({
               ) : (
                 <Button
                   circle
-                  bgColor="orange"
+                  bgColor="red"
                   onClick={handleNewArray}
                   disabled={sortingStatus !== "idle"}
                 >

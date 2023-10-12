@@ -30,8 +30,8 @@ abstract class Algorithm {
     }
 
     abstract resetAttributes(): void
-    abstract sort(array: number[]): void
-    abstract sortColors(array: ColorValue[]): void
+    abstract sort(array: number[]): number[] | void;
+    abstract sortColors(array: ColorValue[]): ColorValue[] | void
     abstract isSky(...args: any[]): boolean
     abstract isOrange(...args: any[]): boolean
     abstract isRose(...args: any[]): boolean

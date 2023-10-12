@@ -35,7 +35,7 @@ export type SortingAction =
 
 export const getInitialState = (sortingAlgo: SortingAlgo): SortingState => {
     // re-usable constants
-    const arraySize = 25;
+    const arraySize = 32;
     const maxValue = 400;
     const colorSystem: ColorSystem = "HEX";
     const array: number[] = genArray(arraySize, maxValue);

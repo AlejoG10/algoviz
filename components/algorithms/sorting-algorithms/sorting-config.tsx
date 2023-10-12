@@ -10,6 +10,7 @@ import Button from "@/components/shared/form/button";
 import MyTooltip from "@/components/shared/my-tooltip";
 
 interface SortingConfigProps {
+  sortingAlgo: SortingAlgo;
   sortingStatus: SortingStatus;
   arraySize: number;
   maxValue: number;
@@ -20,6 +21,7 @@ interface SortingConfigProps {
   showValues: boolean;
   isLoading: boolean;
   handleArraySizeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  adjustPower2: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleMaxValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDelayChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSortingOrderChange: (sortingOrder: SortingOrder) => void;
@@ -29,6 +31,7 @@ interface SortingConfigProps {
 }
 
 const SortingConfig: React.FC<SortingConfigProps> = ({
+  sortingAlgo,
   sortingStatus,
   arraySize,
   maxValue,
@@ -39,6 +42,7 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
   styleMode,
   isLoading,
   handleArraySizeChange,
+  adjustPower2,
   handleMaxValueChange,
   handleDelayChange,
   handleSortingOrderChange,
@@ -46,8 +50,8 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
   toggleShowValues,
   handleStyleModeChange,
 }) => {
-  const MIN_ARRAY_SIZE = 3;
-  const MAX_ARRAY_SIZE = 500;
+  const MIN_ARRAY_SIZE = 4;
+  const MAX_ARRAY_SIZE = 512;
   const MIN_MAX_VALUE = 2;
   const MAX_MAX_VALUE = 1000;
   const MIN_DELAY = 0;
@@ -102,7 +106,9 @@ const SortingConfig: React.FC<SortingConfigProps> = ({
           min={MIN_ARRAY_SIZE}
           max={MAX_ARRAY_SIZE}
           value={arraySize}
-          onChange={handleArraySizeChange}
+          onChange={
+            sortingAlgo !== "merge-sort" ? handleArraySizeChange : adjustPower2
+          }
           disabled={sortingStatus !== "idle"}
         />
       )}
