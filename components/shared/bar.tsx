@@ -7,7 +7,6 @@ interface BaseProps {
   isOrange: boolean;
   isRose: boolean;
   isSorted: boolean;
-  handleWidthChange?: ((width: number) => void) | undefined;
 }
 
 interface DefaultModeBarProps extends BaseProps {
@@ -30,7 +29,6 @@ const Bar: React.FC<BarProps> = ({
   isOrange,
   isRose,
   isSorted,
-  handleWidthChange,
 }) => {
   const height = Math.floor((value / maxValue) * maxHeight);
   let styles: any = { height: `${height}px` };
@@ -54,7 +52,7 @@ const Bar: React.FC<BarProps> = ({
 
       {color && (
         <span
-          className={`absolute bottom-2 rounded-full w-3 h-3
+          className={`absolute bottom-[6px] rounded-full aspect-square w-[10px]
             ${isSorted && "bg-green-500"}
             ${isRose && "bg-rose-500"}
             ${isSky && "bg-sky-500"}

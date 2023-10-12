@@ -44,7 +44,7 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
 
   const [visible, setVisible] = useState(true);
 
-  const HEIGHT = 400;
+  const HEIGHT = 375;
 
   // -------
   // HELPERS
@@ -80,6 +80,11 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
     if (containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth;
       setVisible(containerWidth / array.length >= 2.5);
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
     }
   };
 

@@ -40,7 +40,7 @@ const VisualizerContainer = forwardRef(
     }
 
     return (
-      <div className="relative flex visualizer-bp:justify-center bg-neutral-50 border-neutral-100 border shadow-md rounded-xl px-6 py-8">
+      <div className="relative flex visualizer-bp:justify-center bg-neutral-50 border-neutral-100 border shadow-md rounded-xl p-6">
         <div
           ref={ref}
           style={styles}

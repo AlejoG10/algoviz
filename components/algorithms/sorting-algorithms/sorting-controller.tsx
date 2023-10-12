@@ -25,6 +25,7 @@ interface SortingControllerProps {
   sortingAlgo: SortingAlgo;
 }
 
+// TODO: add toaster alerts
 const SortingController: React.FC<SortingControllerProps> = ({
   sortingAlgo,
 }) => {
@@ -380,13 +381,6 @@ const SortingController: React.FC<SortingControllerProps> = ({
             isLoading={isLoading}
           />
         )}
-
-        <Console
-          steps={state.stepIdx}
-          swaps={algorithm.getNumSwapsAtIdx(state.stepIdx)}
-          isLoading={isLoading}
-        />
-
         <Controls
           sortingStatus={state.sortingStatus}
           stepIdx={state.stepIdx}
@@ -398,6 +392,11 @@ const SortingController: React.FC<SortingControllerProps> = ({
           handlePause={handlePause}
           handleNewArray={handleNewArray}
           handleReset={handleReset}
+        />
+        <Console
+          steps={state.stepIdx}
+          swaps={algorithm.getNumSwapsAtIdx(state.stepIdx)}
+          isLoading={isLoading}
         />
       </PlaygroundContainer>
     </ControllerContainer>

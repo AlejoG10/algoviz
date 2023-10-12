@@ -6,7 +6,7 @@ const ControllerContainer: React.FC<ControllerContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="flex flex-col-reverse lg:flex-row gap-10 w-full h-fit lg:h-[700px]">
+    <div className="flex flex-col-reverse lg:flex-row gap-10 w-full h-fit lg:h-[650px]">
       {children}
     </div>
   );
