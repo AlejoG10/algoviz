@@ -1,15 +1,16 @@
-"use client";
-
-import { NextUIProvider } from "@nextui-org/react";
-
-const LandingPage = () => {
+const HomePage = () => {
   return (
-    <NextUIProvider>
-      <div className="flex justify-center items-center w-screen h-screen">
-        <h1 className="text-5xl font-black">LANDING PAGE</h1>
+    <div className="bg-rose-100 py-4 w-full h-full">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
+        <div className="bg-neutral-50 rounded-md w-full h-60"></div>
       </div>
-    </NextUIProvider>
+    </div>
   );
 };
 
-export default LandingPage;
+export default HomePage;

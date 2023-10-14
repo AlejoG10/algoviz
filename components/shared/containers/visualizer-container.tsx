@@ -55,4 +55,6 @@ const VisualizerContainer = forwardRef(
   }
 );
 
+VisualizerContainer.displayName = 'VisualizerContainer';
+
 export default VisualizerContainer;

@@ -1,22 +1,17 @@
-import "../globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Metadata } from "next";
 
-const inter = Inter({ subsets: ["latin"] });
-
+// TODO: complete
 export const metadata: Metadata = {
-  title: "VisuAlgo",
-  description: "Popular algorithms visualized!",
+  title: "",
+  description: "",
 };
 
-export default function RootLayout({
-  children,
-}: {
+interface HomeLayoutProps {
   children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
-  );
 }
+
+const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
+  return <div className="relative top-navbar flex-grow w-full max-w-[2560px]">{children}</div>;
+};
+
+export default HomeLayout;

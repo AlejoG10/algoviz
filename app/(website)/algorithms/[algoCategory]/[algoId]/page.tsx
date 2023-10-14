@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { useFilters } from "@/hooks/useFilters";
+import Filters from "@/components/shared/filters";
 import SortingController from "@/components/algorithms/sorting-algorithms/sorting-controller";
 
 interface IParams {
@@ -30,8 +31,11 @@ const AlgorithmPage: React.FC<IParams> = ({ params }) => {
   }
 
   return (
-    <div className={`mt-6 lg:mt-10 ${filters.isOpen && "pt-filters"}`}>
-      {content}
+    <div className="pt-navbar">
+      <Filters />
+      <div className={`mt-6 lg:mt-10 ${filters.isOpen && "pt-filters"}`}>
+        {content}
+      </div>
     </div>
   );
 };

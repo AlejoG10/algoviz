@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+const defaultTheme = require('tailwindcss/defaultTheme')
 const { nextui } = require("@nextui-org/react");
 
 const config: Config = {
@@ -9,6 +10,11 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      'xs': '475px',
+      "visualizer-bp": "900px",
+      ...defaultTheme.screens,
+    },
     extend: {
       animation: {
         'spin-slow': 'spin 2s linear infinite',
@@ -21,9 +27,6 @@ const config: Config = {
       spacing: {
         'navbar': '5rem',
         'filters': '5rem',
-      },
-      screens: {
-        "visualizer-bp": "900px",
       },
     },
   },

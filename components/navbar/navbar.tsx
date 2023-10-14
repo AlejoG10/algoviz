@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <div
       style={styles}
-      className="fixed left-0 bg-white px-8 sm:px-14 w-full h-navbar"
+      className="fixed left-0 top-0 bg-white px-4 lg:px-16 w-full h-navbar"
     >
       <nav className="flex justify-between items-center w-full h-full">
         {/* NAV BRAND */}
@@ -27,7 +27,9 @@ const Navbar = () => {
             height={50}
             className="group-hover:animate-spin-slow"
           />
-          <p className="text-2xl text-neutral-800 font-semibold">VisuAlgo</p>
+          <p className="text-2xl text-neutral-800 font-semibold">
+            {process.env.NEXT_PUBLIC_BRAND_NAME}
+          </p>
         </Link>
 
         <Button

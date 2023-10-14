@@ -3,10 +3,10 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <div className="relative right-8 sm:right-14 bg-neutral-800 p-8 sm:px-14 mt-20 lg:mt-32 w-screen h-80">
+    <div className="relative bg-neutral-800 p-4 lg:px-16 mt-32 w-screen h-60">
       <footer>
         {/* NAV BRAND */}
-        <Link href="/algorithms" className="group flex items-center gap-x-4">
+        <Link href="/algorithms" className="group flex items-center gap-x-4 w-fit">
           <Image
             src="/images/logo.png"
             alt="logo"

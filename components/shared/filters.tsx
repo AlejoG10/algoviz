@@ -99,7 +99,7 @@ const Filters = () => {
 
   useEffect(() => {
     const active = allFilters.find((filter) => filter.route === pathname);
-    filters.setActiveFilter(active!.name);
+    filters.setActiveFilter(active?.name);
   }, [pathname]);
 
   return (

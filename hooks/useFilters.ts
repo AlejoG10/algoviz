@@ -9,7 +9,7 @@ type FiltersHookStates = {
 }
 
 type FiltersHookActions = {
-    setActiveFilter: (filter: string) => void;
+    setActiveFilter: (filter: string | undefined) => void;
     onOpen: () => void;
     onAware: () => void;
     onNotAware: () => void;
