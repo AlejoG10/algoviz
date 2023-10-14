@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 
 import "./globals.css";
 import AppContainer from "@/components/shared/containers/app-container";
@@ -26,6 +27,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           {children}
           <Footer />
         </AppContainer>
+        <Analytics />
       </body>
     </html>
   );
