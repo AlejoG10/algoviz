@@ -74,11 +74,13 @@ const Filters = () => {
   const filters = useFilters();
 
   const handleClick = (name: string, route: string) => {
-    filters.setActive(name);
-    router.push(route);
+    if (route !== "") {
+      filters.setActive(name);
+      router.push(route);
 
-    if (window.innerWidth < 1024) {
-      filters.onClose();
+      if (window.innerWidth < 1024) {
+        filters.onClose();
+      }
     }
   };
 

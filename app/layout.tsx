@@ -9,7 +9,7 @@ import Footer from "@/components/footer/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "VisuAlgo",
+  title: "AlgoViz",
   description: "Popular algorithms visualized!",
 };
 
@@ -19,7 +19,7 @@ interface RootLayoutProps {
 
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
-    <html lang="en" className="bg-neutral-800">
+    <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>
         <AppContainer>
           <Navbar />

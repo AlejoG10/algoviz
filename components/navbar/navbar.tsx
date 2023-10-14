@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { Filter, FilterX } from "lucide-react";
 
 import { useFilters } from "@/hooks/useFilters";
+import Brand from "../shared/brand";
 import Button from "../shared/form/button";
 
 const Navbar = () => {
@@ -19,18 +18,7 @@ const Navbar = () => {
     >
       <nav className="flex justify-between items-center w-full h-full">
         {/* NAV BRAND */}
-        <Link href="/algorithms" className="group flex items-center gap-x-4">
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={50}
-            height={50}
-            className="group-hover:animate-spin-slow"
-          />
-          <p className="text-2xl text-neutral-800 font-semibold">
-            {process.env.NEXT_PUBLIC_BRAND_NAME}
-          </p>
-        </Link>
+        <Brand />
 
         <Button
           circle
