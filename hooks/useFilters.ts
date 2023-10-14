@@ -3,28 +3,22 @@
 import { create } from "zustand";
 
 type FiltersHookStates = {
-    activeFilter: string;
+    active: string;
     isOpen: boolean;
-    isAware: boolean;
 }
 
 type FiltersHookActions = {
-    setActiveFilter: (filter: string | undefined) => void;
+    setActive: (name: string) => void;
     onOpen: () => void;
-    onAware: () => void;
-    onNotAware: () => void;
     onClose: () => void;
     onToggle: () => void;
 }
 
 export const useFilters = create<FiltersHookStates & FiltersHookActions>((set) => ({
-    activeFilter: "",
+    active: "",
     isOpen: true,
-    isAware: false,
-    setActiveFilter: (filter) => set(state => ({ activeFilter: filter })),
+    setActive: (name) => set({ active: name }),
     onOpen: () => set({ isOpen: true }),
-    onAware: () => set({ isAware: true }),
-    onNotAware: () => set({ isAware: false }),
     onClose: () => set({ isOpen: false }),
     onToggle: () => set(state => ({ isOpen: state.isOpen ? false : true }))
 }));

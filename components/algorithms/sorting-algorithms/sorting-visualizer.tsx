@@ -80,11 +80,6 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
     if (containerRef.current) {
       const containerWidth = containerRef.current.offsetWidth;
       setVisible(containerWidth / array.length >= 2.5);
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
     }
   };
 
@@ -98,6 +93,14 @@ const SortingVisualizer: React.FC<SortingVisualizerProps> = ({
     window.addEventListener("resize", checkVisibility);
     return () => window.removeEventListener("resize", checkVisibility);
   }, [containerRef.current, array.length]);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
   return (
     <VisualizerContainer

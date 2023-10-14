@@ -39,9 +39,7 @@ const Navbar = () => {
         >
           <div className="flex items-center gap-x-2 px-2">
             {!filters.isOpen && (
-              <p className="text-neutral-500 font-semibold">
-                {filters.activeFilter}
-              </p>
+              <p className="text-neutral-500 font-semibold">{filters.active}</p>
             )}
             {filters.isOpen ? (
               <FilterX className="text-neutral-500" />

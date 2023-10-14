@@ -15,7 +15,6 @@ const AlgorithmPage: React.FC<IParams> = ({ params }) => {
   const filters = useFilters();
 
   let content;
-
   switch (params.algoCategory) {
     case "sorting":
       content = (
@@ -31,12 +30,12 @@ const AlgorithmPage: React.FC<IParams> = ({ params }) => {
   }
 
   return (
-    <div className="pt-navbar">
+    <>
       <Filters />
       <div className={`mt-6 lg:mt-10 ${filters.isOpen && "pt-filters"}`}>
         {content}
       </div>
-    </div>
+    </>
   );
 };
 
