@@ -11,7 +11,11 @@ interface HomeLayoutProps {
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
-  return <div className="relative top-navbar flex-grow w-full max-w-[2560px]">{children}</div>;
+  return (
+    <div className="relative flex justify-center items-center top-navbar flex-grow w-full">
+      {children}
+    </div>
+  );
 };
 
 export default HomeLayout;
