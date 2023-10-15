@@ -394,7 +394,6 @@ const SortingController: React.FC<SortingControllerProps> = ({
           handleReset={handleReset}
         />
         <Console
-          steps={state.stepIdx}
           swaps={algorithm.getNumSwapsAtIdx(state.stepIdx)}
           isLoading={isLoading}
         />

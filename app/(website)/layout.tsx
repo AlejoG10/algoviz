@@ -2,20 +2,20 @@ import { Metadata } from "next";
 
 // TODO: complete
 export const metadata: Metadata = {
-  title: "",
-  description: "",
+  title: "AlgoViz",
+  description: "Learning tool to visualize popular algorithms!",
 };
 
-interface HomeLayoutProps {
+interface LandingPageLayoutProps {
   children: React.ReactNode;
 }
 
-const HomeLayout: React.FC<HomeLayoutProps> = ({ children }) => {
+const LandingPageLayout: React.FC<LandingPageLayoutProps> = ({ children }) => {
   return (
-    <div className="relative flex justify-center items-center top-navbar flex-grow w-full">
+    <div className="relative flex justify-center items-center w-full h-screen">
       {children}
     </div>
   );
 };
 
-export default HomeLayout;
+export default LandingPageLayout;

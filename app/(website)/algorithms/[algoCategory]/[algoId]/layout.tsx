@@ -8,11 +8,13 @@ interface IParams {
 }
 
 export async function generateMetadata({ params }: IParams) {
-  const algoName = params.algoId.replace("-", " ");
-  const title = `${capitalize(algoName)} Visualization - AlgoViz`;
+  const algoName = capitalize(params.algoId.replace("-", " "));
+  const title = `${algoName} Visualization - AlgoViz`;
+  const description = `Visualize, learn and simulate the ${algoName} algorithm - AlgoViz`;
 
   return {
     title,
+    description,
   };
 }
 

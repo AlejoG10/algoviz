@@ -63,18 +63,18 @@ class MergeSort extends Algorithm {
 
     mergesort(array: number[], originalArray: number[], startIdx: number = 0): number[] {
         const N = array.length;
-        const half = N / 2;
+        const mid = N / 2;
 
         // base case
         if (N === 1) return array;
 
         let leftArray, rightArray;
 
-        leftArray = array.slice(0, half);
-        rightArray = array.slice(half, N);
+        leftArray = array.slice(0, mid);
+        rightArray = array.slice(mid, N);
 
         leftArray = this.mergesort(leftArray, originalArray, startIdx);
-        rightArray = this.mergesort(rightArray, originalArray, startIdx + half);
+        rightArray = this.mergesort(rightArray, originalArray, startIdx + mid);
 
         return this.merge(leftArray, rightArray, originalArray, startIdx);
     }
@@ -137,18 +137,18 @@ class MergeSort extends Algorithm {
 
     mergesortColors(array: ColorValue[], originalArray: ColorValue[], startIdx: number = 0): ColorValue[] {
         const N = array.length;
-        const half = N / 2;
+        const mid = N / 2;
 
         // base case
         if (N === 1) return array;
 
         let leftArray, rightArray;
 
-        leftArray = array.slice(0, half);
-        rightArray = array.slice(half, N);
+        leftArray = array.slice(0, mid);
+        rightArray = array.slice(mid, N);
 
         leftArray = this.mergesortColors(leftArray, originalArray, startIdx);
-        rightArray = this.mergesortColors(rightArray, originalArray, startIdx + half);
+        rightArray = this.mergesortColors(rightArray, originalArray, startIdx + mid);
 
         return this.mergeColors(leftArray, rightArray, originalArray, startIdx);
     }

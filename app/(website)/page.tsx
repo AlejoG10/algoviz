@@ -6,7 +6,7 @@ import { TypeAnimation } from "react-type-animation";
 
 import Button from "@/components/shared/form/button";
 
-const HomePage = () => {
+const LandingPage = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -15,8 +15,8 @@ const HomePage = () => {
 
   return (
     mounted && (
-      <div className="flex flex-col justify-center items-center w-screen">
-        <h1 className="flex flex-col justify-center items-center text-3xl md:text-4xl text-center font-bold mb-10">
+      <div className="flex flex-col justify-center items-center gap-y-16 w-screen">
+        <h1 className="flex flex-col justify-center items-center text-3xl md:text-4xl text-center font-bold">
           <TypeAnimation
             sequence={["Visualize", 2000, "Learn", 2000, "Simulate", 2000]}
             wrapper="h1"
@@ -37,4 +37,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;
