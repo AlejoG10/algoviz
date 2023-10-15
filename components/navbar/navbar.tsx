@@ -17,7 +17,9 @@ const Navbar = () => {
   return (
     <div
       style={styles}
-      className="fixed top-0 bg-white px-4 lg:px-16 w-full h-navbar"
+      className={`fixed top-0 bg-white px-4 lg:px-16 w-full h-navbar ${
+        !filters.isOpen && "shadow-md"
+      }`}
     >
       <nav className="flex justify-between items-center w-full h-full">
         {/* NAV BRAND */}
@@ -26,7 +28,7 @@ const Navbar = () => {
         {pathname !== "/" && (
           <Button
             circle
-            className="lg:hidden hover:bg-neutral-100"
+            className="hover:bg-neutral-100"
             onClick={filters.onToggle}
           >
             <div className="flex items-center gap-x-2 px-2">

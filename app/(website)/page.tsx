@@ -24,7 +24,7 @@ const HomePage = () => {
             deletionSpeed={3}
             repeat={Infinity}
           />
-          Popular Algorithms!
+          <span className="mt-2">Popular Algorithms!</span>
         </h1>
 
         <Link href="/algorithms/sorting/bubble-sort">

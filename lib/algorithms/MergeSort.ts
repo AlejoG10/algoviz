@@ -1,7 +1,7 @@
 import Algorithm from "./Algorithm";
 
 // TODO: reduce code, optimize
-// FIXME: fix it - only works on 2^k numbers
+// FIXME: fix it - only works on 2^k array size
 class MergeSort extends Algorithm {
     constructor() {
         super([[0, 1, 0]])
@@ -24,11 +24,14 @@ class MergeSort extends Algorithm {
         const leftArrayLength = leftArray.length;
         let sortedArray: number[] = [];
 
+        let numSwaps = this.numSwaps[this.numSwaps.length - 1];
+
         while (leftArray.length > 0 && rightArray.length > 0) {
             if (leftArray[0] < rightArray[0]) {
                 this.pushAndShift(sortedArray, leftArray);
             } else {
                 this.pushAndShift(sortedArray, rightArray);
+                numSwaps++;
             }
         }
 
@@ -52,6 +55,7 @@ class MergeSort extends Algorithm {
 
         this.sortingSteps.push(stepArray);
         this.comparisons.push([startIdx, startIdx + sortedArray.length - 1, leftArrayLength]);
+        this.numSwaps.push(numSwaps);
         this.sortedIdxs.push(startIdx + sortedArray.length - 1);
 
         return sortedArray;
@@ -78,8 +82,10 @@ class MergeSort extends Algorithm {
     sort(array: number[]): number[] {
         this.sortingSteps.push([...array]);
         this.comparisons = [];
+        this.numSwaps = [0];
         const sortedArray = this.mergesort(array, array);
         this.comparisons.push([0, array.length - 1, array.length - 1]);
+        this.numSwaps.push(this.numSwaps[this.numSwaps.length - 1]);
         return sortedArray;
     }
 
@@ -92,11 +98,14 @@ class MergeSort extends Algorithm {
         const leftArrayLength = leftArray.length;
         let sortedArray: ColorValue[] = [];
 
+        let numSwaps = this.numSwaps[this.numSwaps.length - 1];
+
         while (leftArray.length > 0 && rightArray.length > 0) {
             if (leftArray[0][1] < rightArray[0][1]) {
                 this.pushAndShiftColors(sortedArray, leftArray);
             } else {
                 this.pushAndShiftColors(sortedArray, rightArray);
+                numSwaps++;
             }
         }
 
@@ -120,6 +129,7 @@ class MergeSort extends Algorithm {
 
         this.colorSortingSteps.push(stepArray);
         this.comparisons.push([startIdx, startIdx + sortedArray.length - 1, leftArrayLength]);
+        this.numSwaps.push(numSwaps);
         this.sortedIdxs.push(startIdx + sortedArray.length - 1);
 
         return sortedArray;
@@ -146,8 +156,10 @@ class MergeSort extends Algorithm {
     sortColors(array: ColorValue[]): ColorValue[] {
         this.colorSortingSteps.push([...array]);
         this.comparisons = [];
+        this.numSwaps = [0];
         const sortedArray = this.mergesortColors(array, array);
         this.comparisons.push([0, array.length - 1, array.length - 1]);
+        this.numSwaps.push(this.numSwaps[this.numSwaps.length - 1]);
         return sortedArray;
     }
 

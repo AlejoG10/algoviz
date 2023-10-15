@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AlgoViz",
-  description: "Popular algorithms visualized!",
+  description: "Learning tool to visualize popular algorithms!",
 };
 
 interface RootLayoutProps {
