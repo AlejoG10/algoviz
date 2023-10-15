@@ -23,7 +23,7 @@ interface AlgorithmsLayoutProps {
 }
 
 const AlgorithmsLayout: React.FC<AlgorithmsLayoutProps> = ({ children }) => {
-  return <div className="flex flex-col w-full">{children}</div>;
+  return <div className="flex flex-col pt-navbar mb-12 lg:mb-20 w-full">{children}</div>;
 };
 
 export default AlgorithmsLayout;

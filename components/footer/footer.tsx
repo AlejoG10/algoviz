@@ -33,7 +33,7 @@ const FooterItem: React.FC<FooterItemProps> = ({ route, name, icon: Icon }) => {
 
 const Footer = () => {
   return (
-    <footer className="relative bg-neutral-100 p-4 lg:px-16 lg:py-8 mt-32 w-screen cursor-default">
+    <footer className="relative bg-neutral-100 p-4 lg:px-16 lg:py-8 w-screen cursor-default">
       <div className="flex flex-col gap-y-10">
         {/* NAV BRAND */}
         <Brand />

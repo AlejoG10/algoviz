@@ -12,7 +12,7 @@ interface LandingPageLayoutProps {
 
 const LandingPageLayout: React.FC<LandingPageLayoutProps> = ({ children }) => {
   return (
-    <div className="relative flex justify-center items-center w-full h-screen">
+    <div className="relative flex justify-center items-center w-full flex-grow">
       {children}
     </div>
   );
