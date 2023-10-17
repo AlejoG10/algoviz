@@ -22,7 +22,7 @@ const Info: React.FC<InfoProps> = ({
       {/* TODO: description */}
 
       {/* (pseudo)code */}
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full">
+      <div className="flex flex-col gap-y-4 lg:flex-row lg:justify-between w-full">
         <WindowSimulator
           heading="Code"
           codePY={codePY}

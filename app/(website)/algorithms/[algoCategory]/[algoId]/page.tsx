@@ -6,6 +6,7 @@ import SortingController from "@/components/algorithms/sorting-algorithms/sortin
 import BubbleSortInfo from "@/components/algorithms/sorting-algorithms/bubble-sort/bubble-sort-info";
 import SelectionSortInfo from "@/components/algorithms/sorting-algorithms/selection-sort/selection-sort-info";
 import InsertionSortInfo from "@/components/algorithms/sorting-algorithms/insertion-sort/insertion-sort-info";
+import MergeSortInfo from "@/components/algorithms/sorting-algorithms/merge-sort/merge-sort-info";
 
 interface IParams {
   params: {
@@ -44,6 +45,10 @@ const AlgorithmPage: React.FC<IParams> = ({ params }) => {
 
     case "insertion-sort":
       info = <InsertionSortInfo />;
+      break;
+
+    case "merge-sort":
+      info = <MergeSortInfo />;
       break;
 
     default:
