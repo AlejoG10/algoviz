@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 // TODO: complete
 export const metadata: Metadata = {
-  title: "AlgoViz: Learning tool to visualize popular algorithms",
+  title: "",
   description: "",
 };
 

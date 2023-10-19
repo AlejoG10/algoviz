@@ -10,10 +10,14 @@ import Footer from "@/components/footer/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AlgoViz: Learning tool to visualize popular algorithms",
-  description: "",
+  title: {
+    template: "%s | AlgoViz",
+    default: "Learning tool to visualize popular algorithms",
+  },
+  description:
+    "Learning tool where you can visualize, simulate and learn popular algorithms",
   icons: {
-    icon: "/icon.ico",
+    icon: "./icon.png",
   },
 };
 
