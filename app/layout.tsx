@@ -10,15 +10,14 @@ import Footer from "@/components/footer/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AlgoViz",
-  description: "Learning tool to visualize popular algorithms!",
+  title: "AlgoViz: Learning tool to visualize popular algorithms",
+  description: "",
+  icons: {
+    icon: "/icon.ico",
+  },
 };
 
-interface RootLayoutProps {
-  children: React.ReactNode;
-}
-
-const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={`${inter.className} overflow-x-hidden`}>

@@ -2,8 +2,8 @@ import { Metadata } from "next";
 
 // TODO: complete
 export const metadata: Metadata = {
-  title: "AlgoViz",
-  description: "Learning tool to visualize popular algorithms!",
+  title: "AlgoViz: Learning tool to visualize popular algorithms",
+  description: "",
 };
 
 interface LandingPageLayoutProps {
