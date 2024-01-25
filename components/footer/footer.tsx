@@ -60,7 +60,7 @@ const Footer = () => {
               <FooterItem
                 name="Portfolio"
                 icon={User2}
-                route="portfolio-alejog10.vercel.app"
+                route="https://portfolio-alejog10.vercel.app/"
               />
               <FooterItem
                 name="Github"
